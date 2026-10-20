@@ -1,0 +1,479 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+  <!-- Header -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+    <div>
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">QR Verification Sites Manager</h1>
+      <p class="text-slate-400 text-sm mt-1">
+        A single domain QR redirector that maps extension IDs (CNIC, License No, Permit No, Doc Ref) to designated national portals.
+      </p>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <button 
+        onclick="document.getElementById('new-site-modal').classList.remove('hidden')"
+        class="bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition shadow-lg shadow-indigo-600/30 flex items-center gap-2"
+      >
+        <i class="fa-solid fa-plus text-xs"></i>
+        <span>Add Verification Site</span>
+      </button>
+    </div>
+  </div>
+
+  <% if (success) { %>
+    <div class="mb-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm flex items-center gap-3">
+      <i class="fa-solid fa-circle-check text-base"></i>
+      <span><%= success %></span>
+    </div>
+  <% } %>
+  <% if (error) { %>
+    <div class="mb-6 p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-sm flex items-center gap-3">
+      <i class="fa-solid fa-triangle-exclamation text-base"></i>
+      <span><%= error %></span>
+    </div>
+  <% } %>
+
+  <!-- Explanatory Architecture Banner -->
+  <div class="mb-8 p-5 rounded-2xl bg-gradient-to-r from-indigo-950/60 to-slate-900 border border-indigo-500/20">
+    <div class="flex items-start gap-4">
+      <div class="p-3 bg-indigo-500/10 border border-indigo-500/20 rounded-xl text-indigo-400 text-xl hidden sm:block">
+        <i class="fa-solid fa-qrcode"></i>
+      </div>
+      <div class="flex-1">
+        <h3 class="font-bold text-white text-sm">How Your QR Redirect Flow Operates</h3>
+        <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+          Embed your single redirector domain into the printed document's QR code. When scanned, it automatically routes to the designated national verification page with the ID placed in the correct URL structure:
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3 text-[11px] font-mono">
+          <div class="bg-slate-950/80 p-2.5 rounded-lg border border-slate-800 text-slate-300">
+            <span class="text-indigo-400 font-bold block">DARI QR Scan:</span>
+            <span class="text-slate-400">Scan:</span> <%= baseUrl %>/dari/1234567<br>
+            <span class="text-emerald-400">&rarr;</span> https://dari.ae/app/verify-document?permitNumber=1234567
+          </div>
+          <div class="bg-slate-950/80 p-2.5 rounded-lg border border-slate-800 text-slate-300">
+            <span class="text-indigo-400 font-bold block">Pakistan Driving License:</span>
+            <span class="text-slate-400">Scan:</span> <%= baseUrl %>/pakistan/ITP-89231<br>
+            <span class="text-emerald-400">&rarr;</span> http://localhost:8080/verify-license.html?lic=ITP-89231
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Verification Sites Table -->
+  <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl mb-8">
+    <div class="p-4 sm:p-5 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div>
+        <h2 class="text-base font-semibold text-white">Configured Verification Portals</h2>
+        <p class="text-xs text-slate-400">Manage destination domains, parameter placement rules, and routing extensions</p>
+      </div>
+      <div>
+        <span class="text-xs px-2.5 py-1 bg-slate-950 border border-slate-800 rounded-lg text-slate-400">
+          <%= sites.length %> Portals active
+        </span>
+      </div>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-sm">
+        <thead class="bg-slate-950/60 text-slate-400 text-xs uppercase tracking-wider border-b border-slate-800">
+          <tr>
+            <th class="px-5 py-3 font-semibold">Country / Site Key</th>
+            <th class="px-5 py-3 font-semibold">Destination Portal</th>
+            <th class="px-5 py-3 font-semibold">QR Extension Format</th>
+            <th class="px-5 py-3 font-semibold text-center">Redirects</th>
+            <th class="px-5 py-3 font-semibold text-center">Status</th>
+            <th class="px-5 py-3 font-semibold text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-800/60">
+          <% sites.forEach(site => { %>
+            <tr class="hover:bg-slate-800/30 transition">
+              <!-- Key / Title -->
+              <td class="px-5 py-4">
+                <div class="font-bold text-white text-sm"><%= site.title %></div>
+                <div class="flex items-center gap-2 mt-1">
+                  <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-mono bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                    /<%= site.key_name %>/:id
+                  </span>
+                </div>
+              </td>
+
+              <!-- Base URL -->
+              <td class="px-5 py-4 max-w-xs truncate">
+                <div class="font-mono text-xs text-slate-300 truncate" title="<%= site.base_url %>">
+                  <%= site.base_url %>
+                </div>
+                <div class="text-[11px] text-slate-500 mt-1">
+                  Mode: <span class="text-indigo-400 font-semibold uppercase"><%= site.append_mode %></span>
+                  <% if (site.append_mode === 'query') { %>
+                    (?<%= site.query_param_name %>=...)
+                  <% } %>
+                </div>
+              </td>
+
+              <!-- Example QR Link -->
+              <td class="px-5 py-4">
+                <div class="text-xs font-mono text-slate-300">
+                  <%= baseUrl %>/<%= site.key_name %>/<span class="text-emerald-400">ID_HERE</span>
+                </div>
+                <div class="mt-1 flex items-center gap-2 text-xs text-slate-500">
+                  <a href="/<%= site.key_name %>/SAMPLE12345" target="_blank" class="hover:text-indigo-400 underline decoration-slate-700 flex items-center gap-1">
+                    <span>Test sample</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                  </a>
+                  <span>&bull;</span>
+                  <button 
+                    type="button" 
+                    onclick="copyToClipboard('<%= baseUrl %>/<%= site.key_name %>/')"
+                    class="hover:text-indigo-300 text-slate-400 transition"
+                  >
+                    <i class="fa-regular fa-copy"></i> Copy prefix
+                  </button>
+                </div>
+              </td>
+
+              <!-- Total clicks -->
+              <td class="px-5 py-4 text-center">
+                <span class="text-sm font-bold text-white"><%= site.total_clicks %></span>
+              </td>
+
+              <!-- Status -->
+              <td class="px-5 py-4 text-center">
+                <% if (site.is_active) { %>
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    Active
+                  </span>
+                <% } else { %>
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20">
+                    Disabled
+                  </span>
+                <% } %>
+              </td>
+
+              <!-- Actions -->
+              <td class="px-5 py-4 text-right">
+                <div class="flex items-center justify-end gap-2">
+                  <!-- QR Code -->
+                  <button
+                    type="button"
+                    onclick="showQR(<%= site.id %>, '<%= site.key_name %>', '<%= site.title %>')"
+                    class="p-1.5 rounded-lg border border-indigo-500/30 text-indigo-400 hover:bg-indigo-500/10 transition"
+                    title="Generate QR Code"
+                  >
+                    <i class="fa-solid fa-qrcode text-xs"></i>
+                  </button>
+
+                  <!-- Toggle -->
+                  <form method="POST" action="/admin/sites/<%= site.id %>/toggle" class="inline">
+                    <button 
+                      type="submit" 
+                      title="<%= site.is_active ? 'Disable' : 'Enable' %> portal"
+                      class="p-1.5 rounded-lg border <%= site.is_active ? 'border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/10' : 'border-slate-800 text-slate-500 hover:bg-slate-800' %> transition"
+                    >
+                      <i class="fa-solid <%= site.is_active ? 'fa-toggle-on text-base' : 'fa-toggle-off text-base' %>"></i>
+                    </button>
+                  </form>
+
+                  <!-- Edit -->
+                  <button 
+                    type="button" 
+                    onclick='openEditSiteModal(<%= JSON.stringify(site) %>)'
+                    class="p-1.5 rounded-lg border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800 transition"
+                    title="Edit portal"
+                  >
+                    <i class="fa-solid fa-pen-to-square text-xs"></i>
+                  </button>
+
+                  <!-- Delete -->
+                  <form method="POST" action="/admin/sites/<%= site.id %>/delete" onsubmit="return confirm('Delete this portal route?');" class="inline">
+                    <button 
+                      type="submit" 
+                      class="p-1.5 rounded-lg border border-slate-800 text-rose-400 hover:bg-rose-500/10 hover:border-rose-500/30 transition"
+                      title="Delete portal"
+                    >
+                      <i class="fa-solid fa-trash text-xs"></i>
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal: New Site -->
+<div id="new-site-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+  <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative">
+    <button 
+      onclick="document.getElementById('new-site-modal').classList.add('hidden')"
+      class="absolute top-5 right-5 text-slate-400 hover:text-white"
+    >
+      <i class="fa-solid fa-xmark text-lg"></i>
+    </button>
+
+    <h2 class="text-lg font-bold text-white mb-1">Add Verification Site</h2>
+    <p class="text-xs text-slate-400 mb-5">Configure how QR codes scanned for this country/portal will be routed.</p>
+
+    <form method="POST" action="/admin/sites">
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Portal Name *</label>
+          <input 
+            type="text" 
+            name="title" 
+            required
+            placeholder="e.g. India Driving License or Afghanistan MFA"
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          >
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Country / Portal Key (URL Slug) *</label>
+          <div class="flex items-center">
+            <span class="bg-slate-950 border border-r-0 border-slate-800 rounded-l-xl px-3 py-2.5 text-xs text-slate-500 font-mono">/</span>
+            <input 
+              type="text" 
+              name="key_name" 
+              required
+              placeholder="e.g. india, pakistan, afghanistan, or dari" 
+              class="w-full bg-slate-950 border border-slate-800 rounded-r-xl px-3 py-2.5 text-sm text-white font-mono focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            >
+          </div>
+          <p class="text-[11px] text-slate-500 mt-1">Visitors scan yourdomain.com/<strong>key</strong>/:id</p>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Target Portal Base URL *</label>
+          <input 
+            type="url" 
+            name="base_url" 
+            required 
+            placeholder="https://example.gov/verify"
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-sm text-white font-mono focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          >
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Extension Placement Mode</label>
+            <select name="append_mode" id="append_mode_select" onchange="toggleParamField(this.value, 'query_param_div')" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-indigo-500">
+              <option value="query">Query Parameter (?param=ID)</option>
+              <option value="path">Path Extension (/base/url/ID)</option>
+            </select>
+          </div>
+
+          <div id="query_param_div">
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Parameter Name</label>
+            <input 
+              type="text" 
+              name="query_param_name" 
+              value="id"
+              placeholder="e.g. permitNumber, lic, refid"
+              class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-white font-mono focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            >
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6 flex justify-end gap-3">
+        <button 
+          type="button" 
+          onclick="document.getElementById('new-site-modal').classList.add('hidden')"
+          class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-800 transition"
+        >
+          Cancel
+        </button>
+        <button 
+          type="submit" 
+          class="px-5 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition shadow-lg shadow-indigo-600/30"
+        >
+          Save Site Portal
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal: Edit Site -->
+<div id="edit-site-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+  <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative">
+    <button 
+      onclick="document.getElementById('edit-site-modal').classList.add('hidden')"
+      class="absolute top-5 right-5 text-slate-400 hover:text-white"
+    >
+      <i class="fa-solid fa-xmark text-lg"></i>
+    </button>
+
+    <h2 class="text-lg font-bold text-white mb-1">Edit Verification Portal</h2>
+    <p class="text-xs text-slate-400 mb-5">Update target portal URL or parameter placement.</p>
+
+    <form id="edit-site-form" method="POST" action="">
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Portal Name</label>
+          <input 
+            type="text" 
+            id="edit-site-title" 
+            name="title" 
+            required
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          >
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Country / Portal Key (Slug)</label>
+          <div class="flex items-center">
+            <span class="bg-slate-950 border border-r-0 border-slate-800 rounded-l-xl px-3 py-2.5 text-xs text-slate-500 font-mono">/</span>
+            <input 
+              type="text" 
+              id="edit-site-key" 
+              name="key_name" 
+              required
+              class="w-full bg-slate-950 border border-slate-800 rounded-r-xl px-3 py-2.5 text-sm text-white font-mono focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            >
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Target Portal Base URL</label>
+          <input 
+            type="url" 
+            id="edit-site-base" 
+            name="base_url" 
+            required 
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-sm text-white font-mono focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          >
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Extension Placement Mode</label>
+            <select name="append_mode" id="edit-site-mode" onchange="toggleParamField(this.value, 'edit_query_param_div')" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-indigo-500">
+              <option value="query">Query Parameter (?param=ID)</option>
+              <option value="path">Path Extension (/base/url/ID)</option>
+            </select>
+          </div>
+
+          <div id="edit_query_param_div">
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Parameter Name</label>
+            <input 
+              type="text" 
+              id="edit-site-param" 
+              name="query_param_name" 
+              class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-white font-mono focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            >
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6 flex justify-end gap-3">
+        <button 
+          type="button" 
+          onclick="document.getElementById('edit-site-modal').classList.add('hidden')"
+          class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-800 transition"
+        >
+          Cancel
+        </button>
+        <button 
+          type="submit" 
+          class="px-5 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition shadow-lg shadow-indigo-600/30"
+        >
+          Update Portal
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  function toggleParamField(val, divId) {
+    const el = document.getElementById(divId);
+    if (el) {
+      el.style.display = (val === 'query') ? 'block' : 'none';
+    }
+  }
+
+  function openEditSiteModal(site) {
+    document.getElementById('edit-site-form').action = '/admin/sites/' + site.id + '/edit';
+    document.getElementById('edit-site-title').value = site.title;
+    document.getElementById('edit-site-key').value = site.key_name;
+    document.getElementById('edit-site-base').value = site.base_url;
+    document.getElementById('edit-site-mode').value = site.append_mode;
+    document.getElementById('edit-site-param').value = site.query_param_name || 'id';
+    toggleParamField(site.append_mode, 'edit_query_param_div');
+    document.getElementById('edit-site-modal').classList.remove('hidden');
+  }
+
+  function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+      alert('Copied URL prefix: ' + text);
+    });
+  }
+
+  async function showQR(siteId, keyName, title) {
+    const modal = document.getElementById('qr-modal');
+    const img = document.getElementById('qr-image');
+    const label = document.getElementById('qr-label');
+    const urlLabel = document.getElementById('qr-url-label');
+    const dlBtn = document.getElementById('qr-download-btn');
+
+    img.src = '';
+    label.textContent = title;
+    urlLabel.textContent = 'Loading...';
+    modal.classList.remove('hidden');
+
+    try {
+      const resp = await fetch(`/admin/sites/${siteId}/qr`);
+      const data = await resp.json();
+      img.src = data.qr;
+      urlLabel.textContent = data.url + '{ID}';
+      dlBtn.href = data.qr;
+      dlBtn.download = `qr-${keyName}.png`;
+    } catch(e) {
+      urlLabel.textContent = 'Error generating QR';
+    }
+  }
+</script>
+
+<!-- QR Modal -->
+<div id="qr-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+  <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl relative text-center">
+    <button 
+      onclick="document.getElementById('qr-modal').classList.add('hidden')"
+      class="absolute top-5 right-5 text-slate-400 hover:text-white"
+    >
+      <i class="fa-solid fa-xmark text-lg"></i>
+    </button>
+
+    <div class="p-3 bg-indigo-500/10 border border-indigo-500/20 rounded-xl text-indigo-400 text-2xl w-fit mx-auto mb-3">
+      <i class="fa-solid fa-qrcode"></i>
+    </div>
+    <h2 class="text-base font-bold text-white mb-1" id="qr-label">QR Code</h2>
+    <p class="text-[11px] text-slate-400 mb-4" id="qr-url-label"></p>
+
+    <div class="flex justify-center mb-4">
+      <div class="bg-white p-3 rounded-xl inline-block">
+        <img id="qr-image" src="" alt="QR Code" class="w-52 h-52 block">
+      </div>
+    </div>
+
+    <p class="text-[11px] text-slate-500 mb-4">
+      Append the document ID after the slash. The QR redirects to the designated verification portal automatically.
+    </p>
+
+    <a 
+      id="qr-download-btn"
+      href="#"
+      download="qr.png"
+      class="inline-flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition shadow-lg shadow-indigo-600/30"
+    >
+      <i class="fa-solid fa-download text-xs"></i>
+      Download QR PNG
+    </a>
+  </div>
+</div>

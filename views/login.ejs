@@ -1,0 +1,48 @@
+<div class="min-h-[80vh] flex items-center justify-center px-4">
+  <div class="max-w-md w-full">
+    <div class="text-center mb-8">
+      <div class="inline-flex p-3 rounded-2xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 mb-3 shadow-inner">
+        <i class="fa-solid fa-lock text-2xl"></i>
+      </div>
+      <h1 class="text-2xl font-bold tracking-tight text-white">Admin Access</h1>
+      <p class="text-slate-400 text-sm mt-1">Authenticate to manage redirection rules and links</p>
+    </div>
+
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur-xl">
+      <% if (error) { %>
+        <div class="mb-5 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-sm flex items-center gap-2">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <span><%= error %></span>
+        </div>
+      <% } %>
+
+      <form method="POST" action="/admin/login" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Password</label>
+          <div class="relative">
+            <input 
+              type="password" 
+              name="password" 
+              required 
+              placeholder="Enter admin password..." 
+              autofocus
+              class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+            >
+          </div>
+        </div>
+
+        <button 
+          type="submit" 
+          class="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-semibold transition shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2"
+        >
+          <span>Sign In</span>
+          <i class="fa-solid fa-arrow-right text-xs"></i>
+        </button>
+      </form>
+
+      <div class="mt-6 pt-6 border-t border-slate-800/60 text-center">
+        <p class="text-xs text-slate-500">Default password is configured in your <code class="text-indigo-400 font-mono bg-slate-950 px-1 py-0.5 rounded">.env</code> file.</p>
+      </div>
+    </div>
+  </div>
+</div>
