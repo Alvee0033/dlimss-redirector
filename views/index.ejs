@@ -1,22 +1,30 @@
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
-  <!-- Header -->
+  <!-- Overview Header -->
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
     <div>
-      <h1 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">QR Verification Sites Manager</h1>
+      <h1 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">QR Gateway Control Center</h1>
       <p class="text-slate-400 text-xs sm:text-sm mt-0.5">
-        Map single-domain dynamic QR URLs directly to target national verification platforms.
+        Multi-country verification router, dynamic QR parameters and instant portal dispatch.
       </p>
     </div>
 
     <!-- Quick Action Buttons -->
-    <div class="flex items-center gap-2 self-start sm:self-auto">
+    <div class="flex items-center gap-2 self-start sm:self-auto flex-wrap">
       <a 
         href="/admin/portals" 
         class="bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 text-xs font-semibold px-3.5 py-2.5 rounded-xl transition flex items-center gap-2"
       >
         <i class="fa-solid fa-compass text-xs"></i>
-        <span>Direct Portals</span>
+        <span>Sites Links</span>
+      </a>
+
+      <a 
+        href="/admin/rules" 
+        class="bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 text-xs font-semibold px-3.5 py-2.5 rounded-xl transition flex items-center gap-2"
+      >
+        <i class="fa-solid fa-sliders text-xs"></i>
+        <span>Site Rules</span>
       </a>
 
       <button 
@@ -42,15 +50,50 @@
     </div>
   <% } %>
 
-  <!-- Horizontal Quick Launch Strip for All Configured Portals -->
+  <!-- Metrics Overview Bar -->
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-sm">
+      <span class="text-xs text-slate-400 font-semibold block mb-1">Total Sites</span>
+      <div class="flex items-center justify-between">
+        <span class="text-2xl font-extrabold text-white"><%= sites.length %></span>
+        <i class="fa-solid fa-layer-group text-indigo-400 text-base"></i>
+      </div>
+    </div>
+
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-sm">
+      <span class="text-xs text-slate-400 font-semibold block mb-1">Active Rules</span>
+      <div class="flex items-center justify-between">
+        <span class="text-2xl font-extrabold text-emerald-400"><%= sites.filter(s => s.is_active).length %></span>
+        <i class="fa-solid fa-circle-check text-emerald-400 text-base"></i>
+      </div>
+    </div>
+
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-sm">
+      <span class="text-xs text-slate-400 font-semibold block mb-1">Total QR Scans</span>
+      <div class="flex items-center justify-between">
+        <span class="text-2xl font-extrabold text-indigo-300"><%= sites.reduce((acc, s) => acc + (s.total_clicks || 0), 0) %></span>
+        <i class="fa-solid fa-bolt text-indigo-400 text-base"></i>
+      </div>
+    </div>
+
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-sm">
+      <span class="text-xs text-slate-400 font-semibold block mb-1">Gateway Mode</span>
+      <div class="flex items-center justify-between">
+        <span class="text-xs font-mono font-bold text-teal-300 bg-teal-500/10 px-2 py-1 rounded">Universal QR</span>
+        <i class="fa-solid fa-qrcode text-teal-400 text-base"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Horizontal Quick Launch Strip -->
   <div class="mb-6 p-4 rounded-2xl bg-slate-900 border border-slate-800 shadow-md">
     <div class="flex items-center justify-between mb-3">
       <div class="flex items-center gap-2">
         <i class="fa-solid fa-rocket text-indigo-400 text-xs"></i>
-        <span class="text-xs font-bold text-white uppercase tracking-wider">Quick Direct Navigation</span>
+        <span class="text-xs font-bold text-white uppercase tracking-wider">Direct Navigation Strip</span>
       </div>
-      <a href="/admin/portals" class="text-[11px] text-indigo-400 hover:underline flex items-center gap-1">
-        <span>View all</span>
+      <a href="/admin/portals" class="text-[11px] text-indigo-400 hover:underline flex items-center gap-1 font-semibold">
+        <span>Open full launchpad</span>
         <i class="fa-solid fa-arrow-right text-[9px]"></i>
       </a>
     </div>
@@ -72,17 +115,15 @@
     </div>
   </div>
 
-  <!-- Mobile View: Responsive Cards (Visible on screens < md) -->
+  <!-- Mobile View: Cards (< md) -->
   <div class="block md:hidden space-y-3 mb-8">
     <div class="flex items-center justify-between text-xs text-slate-400 px-1 font-semibold">
-      <span>Configured Portals (<%= sites.length %>)</span>
-      <span>Tap card to open</span>
+      <span>Configured Sites (<%= sites.length %>)</span>
+      <a href="/admin/rules" class="text-indigo-400 hover:underline">Manage Rules &rarr;</a>
     </div>
 
     <% sites.forEach(site => { %>
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-md space-y-3">
-        
-        <!-- Card Header -->
         <div class="flex items-start justify-between gap-2">
           <div class="flex-1 min-w-0">
             <h3 class="font-bold text-white text-sm truncate"><%= site.title %></h3>
@@ -131,7 +172,6 @@
           </div>
         </div>
 
-        <!-- Target Destination URL -->
         <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800/80 text-[11px] font-mono text-slate-300 break-all">
           <span class="text-[10px] text-slate-500 block uppercase font-sans font-semibold mb-0.5">Destination URL</span>
           <%= site.base_url %>
@@ -146,7 +186,7 @@
             class="py-2 px-2 rounded-xl text-[11px] font-semibold bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 flex items-center justify-center gap-1.5"
           >
             <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
-            <span>Open Site</span>
+            <span>Open</span>
           </a>
 
           <button 
@@ -155,7 +195,7 @@
             class="py-2 px-2 rounded-xl text-[11px] font-semibold bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 flex items-center justify-center gap-1.5"
           >
             <i class="fa-solid fa-qrcode text-[10px]"></i>
-            <span>QR Code</span>
+            <span>QR</span>
           </button>
 
           <a 
@@ -167,21 +207,23 @@
             <span>Test</span>
           </a>
         </div>
-
       </div>
     <% }) %>
   </div>
 
-  <!-- Desktop View: Full Table (Visible on screens >= md) -->
+  <!-- Desktop View: Full Table (>= md) -->
   <div class="hidden md:block bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl mb-8">
     <div class="p-4 sm:p-5 border-b border-slate-800 flex items-center justify-between">
       <div>
-        <h2 class="text-sm font-bold text-white uppercase tracking-wider">Configured Portals</h2>
-        <p class="text-xs text-slate-400">Rules mapping dynamic incoming QR extensions to national verification portals</p>
+        <h2 class="text-sm font-bold text-white uppercase tracking-wider">Configured Verification Portals</h2>
+        <p class="text-xs text-slate-400">Complete summary of gateway routes and target platforms</p>
       </div>
-      <span class="text-xs px-2.5 py-1 bg-slate-950 border border-slate-800 rounded-lg text-slate-400 font-semibold">
-        <%= sites.length %> Portals active
-      </span>
+      <div class="flex items-center gap-2">
+        <a href="/admin/rules" class="text-xs px-3 py-1.5 bg-slate-950 border border-slate-800 hover:border-slate-700 rounded-lg text-indigo-400 font-semibold flex items-center gap-1.5">
+          <i class="fa-solid fa-sliders text-[11px]"></i>
+          <span>Configure Rules</span>
+        </a>
+      </div>
     </div>
 
     <div class="overflow-x-auto">
@@ -199,7 +241,6 @@
         <tbody class="divide-y divide-slate-800/60">
           <% sites.forEach(site => { %>
             <tr class="hover:bg-slate-800/30 transition">
-              <!-- Key / Title -->
               <td class="px-5 py-4">
                 <div class="font-bold text-white text-sm"><%= site.title %></div>
                 <div class="flex items-center gap-2 mt-1">
@@ -209,7 +250,6 @@
                 </div>
               </td>
 
-              <!-- Base URL -->
               <td class="px-5 py-4 max-w-xs">
                 <div class="font-mono text-xs text-slate-300 truncate" title="<%= site.base_url %>">
                   <%= site.base_url %>
@@ -223,7 +263,6 @@
                 </div>
               </td>
 
-              <!-- Example QR Link -->
               <td class="px-5 py-4">
                 <div class="text-xs font-mono text-slate-300">
                   <%= baseUrl %>/<%= site.key_name %>/<span class="text-emerald-400 font-bold">ID</span>
@@ -244,12 +283,10 @@
                 </div>
               </td>
 
-              <!-- Hits -->
               <td class="px-5 py-4 text-center">
                 <span class="text-sm font-bold text-white"><%= site.total_clicks %></span>
               </td>
 
-              <!-- Status -->
               <td class="px-5 py-4 text-center">
                 <% if (site.is_active) { %>
                   <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
@@ -262,10 +299,8 @@
                 <% } %>
               </td>
 
-              <!-- Actions -->
               <td class="px-5 py-4 text-right">
                 <div class="flex items-center justify-end gap-2">
-                  <!-- QR Code -->
                   <button
                     type="button"
                     onclick="showQR(<%= site.id %>, '<%= site.key_name %>', '<%= site.title %>')"
@@ -275,7 +310,6 @@
                     <i class="fa-solid fa-qrcode text-xs"></i>
                   </button>
 
-                  <!-- Toggle -->
                   <form method="POST" action="/admin/sites/<%= site.id %>/toggle" class="inline">
                     <button 
                       type="submit" 
@@ -286,7 +320,6 @@
                     </button>
                   </form>
 
-                  <!-- Edit -->
                   <button 
                     type="button" 
                     onclick='openEditSiteModal(<%= JSON.stringify(site) %>)'
@@ -296,7 +329,6 @@
                     <i class="fa-solid fa-pen-to-square text-xs"></i>
                   </button>
 
-                  <!-- Delete -->
                   <form method="POST" action="/admin/sites/<%= site.id %>/delete" onsubmit="return confirm('Delete this portal route?');" class="inline">
                     <button 
                       type="submit" 
@@ -569,7 +601,7 @@
 
   function showToast(msg) {
     const toast = document.createElement('div');
-    toast.className = 'fixed bottom-20 left-1/2 -translate-x-1/2 bg-slate-800 text-white border border-slate-700 text-xs px-4 py-2 rounded-xl shadow-2xl z-50 transition-all';
+    toast.className = 'fixed bottom-24 left-1/2 -translate-x-1/2 bg-slate-800 text-white border border-slate-700 text-xs px-4 py-2 rounded-xl shadow-2xl z-50 transition-all';
     toast.textContent = msg;
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 2500);

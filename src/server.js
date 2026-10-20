@@ -62,11 +62,18 @@ app.get('/admin/login', (req, res) => {
   });
 });
 
-// Handle Login
+// Handle Login with Remember Me support
 app.post('/admin/login', (req, res) => {
-  const { password } = req.body;
+  const { password, remember_me } = req.body;
   if (password === ADMIN_PASSWORD) {
     req.session.isAdmin = true;
+    if (remember_me) {
+      // 30 days remember me cookie
+      req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 30;
+    } else {
+      // 1 day standard session
+      req.session.cookie.maxAge = 1000 * 60 * 60 * 24;
+    }
     return res.redirect('/admin');
   }
   return res.redirect('/admin/login?error=Invalid+admin+password');
@@ -95,7 +102,95 @@ app.get('/admin', requireAuth, (req, res) => {
   });
 });
 
-// Direct Portals Hub Page (1-Click Launchpad)
+// Create Site Portal
+app.post('/admin/sites', requireAuth, (req, res) => {
+  let { title, key_name, base_url, append_mode, query_param_name } = req.body;
+  if (!title || !key_name || !base_url) {
+    return res.redirect('/admin?error=Missing+required+fields');
+  }
+
+  key_name = key_name.trim().toLowerCase().replace(/^\/+|\/+$/g, '');
+  base_url = base_url.trim();
+  title = title.trim();
+  append_mode = append_mode || 'query';
+  query_param_name = (query_param_name || 'id').trim();
+
+  try {
+    const stmt = db.prepare(`
+      INSERT INTO sites (key_name, title, base_url, append_mode, query_param_name, is_active)
+      VALUES (?, ?, ?, ?, ?, 1)
+    `);
+    stmt.run(key_name, title, base_url, append_mode, query_param_name);
+    res.redirect('/admin?success=Portal+created+successfully');
+  } catch (err) {
+    console.error(err);
+    res.redirect('/admin?error=' + encodeURIComponent(err.message.includes('UNIQUE') ? 'Key or Slug already exists' : err.message));
+  }
+});
+
+// Edit Site Portal
+app.post('/admin/sites/:id/edit', requireAuth, (req, res) => {
+  const { id } = req.params;
+  let { title, key_name, base_url, append_mode, query_param_name } = req.body;
+  if (!title || !key_name || !base_url) {
+    return res.redirect('/admin?error=Missing+required+fields');
+  }
+
+  key_name = key_name.trim().toLowerCase().replace(/^\/+|\/+$/g, '');
+  base_url = base_url.trim();
+  title = title.trim();
+  append_mode = append_mode || 'query';
+  query_param_name = (query_param_name || 'id').trim();
+
+  try {
+    const stmt = db.prepare(`
+      UPDATE sites 
+      SET key_name = ?, title = ?, base_url = ?, append_mode = ?, query_param_name = ?, updated_at = CURRENT_TIMESTAMP
+      WHERE id = ?
+    `);
+    stmt.run(key_name, title, base_url, append_mode, query_param_name, id);
+    res.redirect('/admin?success=Portal+updated+successfully');
+  } catch (err) {
+    console.error(err);
+    res.redirect('/admin?error=' + encodeURIComponent(err.message.includes('UNIQUE') ? 'Key or Slug already exists' : err.message));
+  }
+});
+
+// Toggle Site Portal
+app.post('/admin/sites/:id/toggle', requireAuth, (req, res) => {
+  const { id } = req.params;
+  const site = db.prepare('SELECT is_active FROM sites WHERE id = ?').get(id);
+  if (site) {
+    db.prepare('UPDATE sites SET is_active = ? WHERE id = ?').run(site.is_active ? 0 : 1, id);
+  }
+  const referer = req.headers['referer'] || '/admin';
+  res.redirect(referer);
+});
+
+// Delete Site Portal
+app.post('/admin/sites/:id/delete', requireAuth, (req, res) => {
+  const { id } = req.params;
+  db.prepare('DELETE FROM sites WHERE id = ?').run(id);
+  res.redirect('/admin?success=Portal+deleted+successfully');
+});
+
+// Dedicated Site Rules Page
+app.get('/admin/rules', requireAuth, (req, res) => {
+  const sites = db.prepare('SELECT * FROM sites ORDER BY id ASC').all();
+  const baseUrl = process.env.PUBLIC_DOMAIN || `${req.protocol}://${req.get('host')}`;
+
+  renderWithLayout(res, 'rules', {
+    title: 'Site Forwarding Rules - MultiVerify',
+    isAuthenticated: true,
+    activeTab: 'rules',
+    sites,
+    baseUrl,
+    success: req.query.success || null,
+    error: req.query.error || null
+  });
+});
+
+// Dedicated Sites Links Page (Direct Portal Link Launchpad)
 app.get('/admin/portals', requireAuth, (req, res) => {
   const sites = db.prepare('SELECT * FROM sites ORDER BY id ASC').all();
   const baseUrl = process.env.PUBLIC_DOMAIN || `${req.protocol}://${req.get('host')}`;
@@ -148,6 +243,31 @@ app.post('/admin/links', requireAuth, (req, res) => {
   }
 });
 
+// Edit Custom Link
+app.post('/admin/links/:id/edit', requireAuth, (req, res) => {
+  const { id } = req.params;
+  let { slug, target_url, title } = req.body;
+  if (!slug || !target_url) {
+    return res.redirect('/admin/links?error=Missing+slug+or+target+URL');
+  }
+
+  slug = slug.trim().toLowerCase().replace(/^\/+|\/+$/g, '');
+  target_url = target_url.trim();
+
+  try {
+    const stmt = db.prepare(`
+      UPDATE links 
+      SET slug = ?, target_url = ?, title = ?, updated_at = CURRENT_TIMESTAMP
+      WHERE id = ?
+    `);
+    stmt.run(slug, target_url, (title || '').trim(), id);
+    res.redirect('/admin/links?success=Custom+slug+updated');
+  } catch (err) {
+    console.error(err);
+    res.redirect('/admin/links?error=' + encodeURIComponent(err.message.includes('UNIQUE') ? 'Slug already in use' : err.message));
+  }
+});
+
 // Toggle Custom Link
 app.post('/admin/links/:id/toggle', requireAuth, (req, res) => {
   const { id } = req.params;
@@ -155,7 +275,8 @@ app.post('/admin/links/:id/toggle', requireAuth, (req, res) => {
   if (link) {
     db.prepare('UPDATE links SET is_active = ? WHERE id = ?').run(link.is_active ? 0 : 1, id);
   }
-  res.redirect('/admin/links');
+  const referer = req.headers['referer'] || '/admin/links';
+  res.redirect(referer);
 });
 
 // Delete Custom Link

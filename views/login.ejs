@@ -16,33 +16,112 @@
         </div>
       <% } %>
 
-      <form method="POST" action="/admin/login" class="space-y-4">
+      <form method="POST" action="/admin/login" id="login-form" class="space-y-4">
         <div>
           <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Password</label>
           <div class="relative">
             <input 
               type="password" 
               name="password" 
+              id="admin-password-input"
               required 
+              autocomplete="current-password"
               placeholder="Enter admin password..." 
               autofocus
-              class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+              class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition pr-10"
             >
+            <button 
+              type="button" 
+              onclick="togglePasswordVisibility()" 
+              class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-500 hover:text-slate-300 transition"
+              title="Show/Hide Password"
+            >
+              <i class="fa-regular fa-eye text-sm" id="pwd-toggle-icon"></i>
+            </button>
           </div>
+        </div>
+
+        <!-- Remember Password Checkbox -->
+        <div class="flex items-center justify-between pt-1">
+          <label class="flex items-center gap-2.5 cursor-pointer select-none">
+            <input 
+              type="checkbox" 
+              name="remember_me" 
+              id="remember-me-checkbox"
+              value="1"
+              class="w-4 h-4 rounded bg-slate-950 border-slate-700 text-indigo-600 focus:ring-indigo-500 focus:ring-offset-slate-900 cursor-pointer"
+            >
+            <span class="text-xs font-medium text-slate-300">Remember password on this device</span>
+          </label>
         </div>
 
         <button 
           type="submit" 
-          class="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-semibold transition shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2"
+          class="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-semibold transition shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2 active:scale-[0.99]"
         >
           <span>Sign In</span>
           <i class="fa-solid fa-arrow-right text-xs"></i>
         </button>
       </form>
 
-      <div class="mt-6 pt-6 border-t border-slate-800/60 text-center">
-        <p class="text-xs text-slate-500">Default password is configured in your <code class="text-indigo-400 font-mono bg-slate-950 px-1 py-0.5 rounded">.env</code> file.</p>
+      <div class="mt-6 pt-6 border-t border-slate-800/60 flex items-center justify-between text-xs text-slate-500">
+        <span>Password secured</span>
+        <button 
+          type="button" 
+          onclick="clearSavedPassword()" 
+          id="clear-pwd-btn"
+          class="text-slate-500 hover:text-rose-400 transition hidden"
+        >
+          Clear saved password
+        </button>
       </div>
     </div>
   </div>
 </div>
+
+<script>
+  function togglePasswordVisibility() {
+    const input = document.getElementById('admin-password-input');
+    const icon = document.getElementById('pwd-toggle-icon');
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.className = 'fa-regular fa-eye-slash text-sm';
+    } else {
+      input.type = 'password';
+      icon.className = 'fa-regular fa-eye text-sm';
+    }
+  }
+
+  // Handle local credential retention if remember password is checked
+  (function handleRememberPassword() {
+    const pwdInput = document.getElementById('admin-password-input');
+    const remCheckbox = document.getElementById('remember-me-checkbox');
+    const clearBtn = document.getElementById('clear-pwd-btn');
+    const form = document.getElementById('login-form');
+
+    const savedPwd = localStorage.getItem('mv_admin_saved_pwd');
+    if (savedPwd) {
+      pwdInput.value = savedPwd;
+      remCheckbox.checked = true;
+      if (clearBtn) clearBtn.classList.remove('hidden');
+    }
+
+    form.addEventListener('submit', function() {
+      if (remCheckbox.checked) {
+        localStorage.setItem('mv_admin_saved_pwd', pwdInput.value);
+      } else {
+        localStorage.removeItem('mv_admin_saved_pwd');
+      }
+    });
+  })();
+
+  function clearSavedPassword() {
+    localStorage.removeItem('mv_admin_saved_pwd');
+    const pwdInput = document.getElementById('admin-password-input');
+    const remCheckbox = document.getElementById('remember-me-checkbox');
+    const clearBtn = document.getElementById('clear-pwd-btn');
+    pwdInput.value = '';
+    remCheckbox.checked = false;
+    if (clearBtn) clearBtn.classList.add('hidden');
+  }
+</script>

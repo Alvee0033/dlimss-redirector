@@ -25,7 +25,112 @@
     }
   </script>
   <style>
-    /* Mobile-first touch improvements */
+    /* Theme definitions */
+    :root {
+      --bg-main: #020617;
+      --bg-card: #0f172a;
+      --border-color: #1e293b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    body.theme-lite {
+      --bg-main: #f8fafc;
+      --bg-card: #ffffff;
+      --border-color: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      background-color: #f8fafc !important;
+      color: #0f172a !important;
+    }
+
+    body.theme-lite header,
+    body.theme-lite nav,
+    body.theme-lite #mobile-drawer,
+    body.theme-lite .floating-dock {
+      background-color: rgba(255, 255, 255, 0.94) !important;
+      border-color: #e2e8f0 !important;
+      color: #0f172a !important;
+    }
+
+    body.theme-lite .bg-slate-900,
+    body.theme-lite .bg-slate-950 {
+      background-color: #ffffff !important;
+      border-color: #e2e8f0 !important;
+      color: #0f172a !important;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05) !important;
+    }
+
+    body.theme-lite .border-slate-800,
+    body.theme-lite .border-slate-700 {
+      border-color: #e2e8f0 !important;
+    }
+
+    body.theme-lite .text-white {
+      color: #0f172a !important;
+    }
+
+    body.theme-lite .text-slate-300,
+    body.theme-lite .text-slate-200 {
+      color: #334155 !important;
+    }
+
+    body.theme-lite .text-slate-400,
+    body.theme-lite .text-slate-500 {
+      color: #64748b !important;
+    }
+
+    body.theme-lite input,
+    body.theme-lite select {
+      background-color: #f1f5f9 !important;
+      border-color: #cbd5e1 !important;
+      color: #0f172a !important;
+    }
+
+    /* Scaling / Big Size UI Mode */
+    body.size-big {
+      font-size: 1.15rem;
+    }
+    body.size-big h1 {
+      font-size: 1.85rem !important;
+    }
+    body.size-big h2 {
+      font-size: 1.45rem !important;
+    }
+    body.size-big button,
+    body.size-big a.px-3,
+    body.size-big a.px-4,
+    body.size-big input,
+    body.size-big select {
+      padding-top: 0.75rem !important;
+      padding-bottom: 0.75rem !important;
+      font-size: 0.95rem !important;
+    }
+    body.size-big table td,
+    body.size-big table th {
+      padding-top: 1.1rem !important;
+      padding-bottom: 1.1rem !important;
+      font-size: 0.95rem !important;
+    }
+
+    /* Floating Quick Dock */
+    .floating-dock {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 50;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 9999px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .floating-dock:hover {
+      box-shadow: 0 25px 30px -5px rgba(79, 70, 229, 0.35);
+    }
+
+    /* Smooth touch interactions */
     button, a, input, select {
       touch-action: manipulation;
     }
@@ -34,7 +139,7 @@
     }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans selection:bg-indigo-500 selection:text-white pb-24 md:pb-6">
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans selection:bg-indigo-500 selection:text-white pb-32 md:pb-24 transition-colors duration-200">
 
   <% if (typeof isAuthenticated !== 'undefined' && isAuthenticated) { %>
   <!-- Sticky Top Navigation -->
@@ -56,35 +161,60 @@
           </div>
         </a>
 
-        <!-- Desktop Navigation Links -->
-        <nav class="hidden md:flex items-center space-x-1.5">
-          <a href="/admin" class="text-xs font-semibold px-3 py-2 rounded-xl transition flex items-center gap-2 <%= (typeof activeTab !== 'undefined' && activeTab === 'sites') ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' : 'text-slate-300 hover:text-white hover:bg-slate-800/70' %>">
+        <!-- Desktop Navigation Links (Sites, Rules, Portals, Slugs, Logs) -->
+        <nav class="hidden md:flex items-center space-x-1">
+          <a href="/admin" class="text-xs font-semibold px-3 py-2 rounded-xl transition flex items-center gap-1.5 <%= (typeof activeTab !== 'undefined' && activeTab === 'sites') ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' : 'text-slate-300 hover:text-white hover:bg-slate-800/70' %>">
             <i class="fa-solid fa-layer-group text-xs"></i>
-            <span>Sites & Rules</span>
+            <span>Overview</span>
           </a>
 
-          <a href="/admin/portals" class="text-xs font-semibold px-3 py-2 rounded-xl transition flex items-center gap-2 <%= (typeof activeTab !== 'undefined' && activeTab === 'portals') ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' : 'text-slate-300 hover:text-white hover:bg-slate-800/70' %>">
+          <a href="/admin/rules" class="text-xs font-semibold px-3 py-2 rounded-xl transition flex items-center gap-1.5 <%= (typeof activeTab !== 'undefined' && activeTab === 'rules') ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' : 'text-slate-300 hover:text-white hover:bg-slate-800/70' %>">
+            <i class="fa-solid fa-sliders text-xs text-indigo-400"></i>
+            <span>Site Rules</span>
+          </a>
+
+          <a href="/admin/portals" class="text-xs font-semibold px-3 py-2 rounded-xl transition flex items-center gap-1.5 <%= (typeof activeTab !== 'undefined' && activeTab === 'portals') ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' : 'text-slate-300 hover:text-white hover:bg-slate-800/70' %>">
             <i class="fa-solid fa-compass text-xs text-emerald-400"></i>
-            <span>Direct Portals</span>
+            <span>Sites Links</span>
           </a>
 
-          <a href="/admin/links" class="text-xs font-semibold px-3 py-2 rounded-xl transition flex items-center gap-2 <%= (typeof activeTab !== 'undefined' && activeTab === 'links') ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' : 'text-slate-300 hover:text-white hover:bg-slate-800/70' %>">
+          <a href="/admin/links" class="text-xs font-semibold px-3 py-2 rounded-xl transition flex items-center gap-1.5 <%= (typeof activeTab !== 'undefined' && activeTab === 'links') ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' : 'text-slate-300 hover:text-white hover:bg-slate-800/70' %>">
             <i class="fa-solid fa-link text-xs text-purple-400"></i>
             <span>Custom Slugs</span>
           </a>
 
-          <a href="/admin/logs" class="text-xs font-semibold px-3 py-2 rounded-xl transition flex items-center gap-2 <%= (typeof activeTab !== 'undefined' && activeTab === 'logs') ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' : 'text-slate-300 hover:text-white hover:bg-slate-800/70' %>">
+          <a href="/admin/logs" class="text-xs font-semibold px-3 py-2 rounded-xl transition flex items-center gap-1.5 <%= (typeof activeTab !== 'undefined' && activeTab === 'logs') ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' : 'text-slate-300 hover:text-white hover:bg-slate-800/70' %>">
             <i class="fa-solid fa-chart-line text-xs text-cyan-400"></i>
             <span>Audit Logs</span>
           </a>
         </nav>
 
-        <!-- Right Side: Portals Quick Jump & Logout -->
+        <!-- Right Side: UI Mode Toggles & Logout -->
         <div class="flex items-center gap-2">
-          <a href="/admin/portals" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 hover:bg-emerald-500/20 transition">
-            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
-            <span>Launch Portals</span>
-          </a>
+          
+          <!-- Lite/Dark Theme Toggle Button -->
+          <button 
+            type="button" 
+            onclick="toggleThemeMode()" 
+            id="theme-toggle-btn"
+            title="Toggle Lite / Dark UI" 
+            class="px-2.5 py-1.5 rounded-xl text-xs font-medium bg-slate-800/90 text-slate-300 hover:text-white border border-slate-700/60 transition flex items-center gap-1.5"
+          >
+            <i class="fa-solid fa-sun text-amber-400" id="theme-icon"></i>
+            <span class="hidden lg:inline" id="theme-text">Lite UI</span>
+          </button>
+
+          <!-- Big Size UI Toggle Button -->
+          <button 
+            type="button" 
+            onclick="toggleSizeMode()" 
+            id="size-toggle-btn"
+            title="Toggle Big Size UI" 
+            class="px-2.5 py-1.5 rounded-xl text-xs font-medium bg-slate-800/90 text-slate-300 hover:text-white border border-slate-700/60 transition flex items-center gap-1.5"
+          >
+            <i class="fa-solid fa-up-right-and-down-left-from-center text-xs text-indigo-400"></i>
+            <span class="hidden lg:inline" id="size-text">Big UI</span>
+          </button>
 
           <a href="/admin/logout" class="text-xs font-semibold px-3 py-1.5 rounded-xl text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 border border-rose-500/20 transition flex items-center gap-1.5">
             <i class="fa-solid fa-right-from-bracket text-[11px]"></i>
@@ -109,17 +239,25 @@
       <a href="/admin" class="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold <%= (typeof activeTab !== 'undefined' && activeTab === 'sites') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-slate-800' %>">
         <div class="flex items-center gap-2.5">
           <i class="fa-solid fa-layer-group text-indigo-400 text-sm w-5"></i>
-          <span>Verification Sites</span>
+          <span>Overview</span>
         </div>
         <i class="fa-solid fa-chevron-right text-xs opacity-60"></i>
+      </a>
+
+      <a href="/admin/rules" class="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold <%= (typeof activeTab !== 'undefined' && activeTab === 'rules') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-slate-800' %>">
+        <div class="flex items-center gap-2.5">
+          <i class="fa-solid fa-sliders text-indigo-400 text-sm w-5"></i>
+          <span>Site Forwarding Rules</span>
+        </div>
+        <span class="text-[10px] bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded-full font-bold">Rules Engine</span>
       </a>
 
       <a href="/admin/portals" class="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold <%= (typeof activeTab !== 'undefined' && activeTab === 'portals') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-slate-800' %>">
         <div class="flex items-center gap-2.5">
           <i class="fa-solid fa-compass text-emerald-400 text-sm w-5"></i>
-          <span>Direct Portals Hub</span>
+          <span>Sites Direct Links</span>
         </div>
-        <span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full font-bold">1-Click Launch</span>
+        <span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full font-bold">Launchpad</span>
       </a>
 
       <a href="/admin/links" class="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold <%= (typeof activeTab !== 'undefined' && activeTab === 'links') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-slate-800' %>">
@@ -140,31 +278,55 @@
     </div>
   </header>
 
-  <!-- Mobile Fixed Bottom Navigation Bar -->
-  <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 safe-bottom">
-    <div class="grid grid-cols-4 h-16">
-      <a href="/admin" class="flex flex-col items-center justify-center gap-1 transition <%= (typeof activeTab !== 'undefined' && activeTab === 'sites') ? 'text-indigo-400 font-bold' : 'text-slate-400 hover:text-slate-200' %>">
-        <i class="fa-solid fa-layer-group text-base"></i>
-        <span class="text-[10px]">Sites</span>
-      </a>
+  <!-- Modern Floating Dock Navigation (Desktop & Mobile) -->
+  <aside class="floating-dock bg-slate-900/90 border border-slate-700/80 px-3 py-2 flex items-center gap-1 sm:gap-2 shadow-2xl">
+    <a href="/admin" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition <%= (typeof activeTab !== 'undefined' && activeTab === 'sites') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/40' : 'text-slate-300 hover:text-white hover:bg-slate-800' %>" title="Overview">
+      <i class="fa-solid fa-layer-group text-xs"></i>
+      <span class="hidden sm:inline">Sites</span>
+    </a>
 
-      <a href="/admin/portals" class="flex flex-col items-center justify-center gap-1 transition relative <%= (typeof activeTab !== 'undefined' && activeTab === 'portals') ? 'text-emerald-400 font-bold' : 'text-slate-400 hover:text-slate-200' %>">
-        <span class="absolute top-2 right-6 w-2 h-2 rounded-full bg-emerald-400"></span>
-        <i class="fa-solid fa-compass text-base"></i>
-        <span class="text-[10px]">Portals</span>
-      </a>
+    <a href="/admin/rules" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition <%= (typeof activeTab !== 'undefined' && activeTab === 'rules') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/40' : 'text-slate-300 hover:text-white hover:bg-slate-800' %>" title="Forwarding Rules">
+      <i class="fa-solid fa-sliders text-xs text-indigo-400"></i>
+      <span class="hidden sm:inline">Rules</span>
+    </a>
 
-      <a href="/admin/links" class="flex flex-col items-center justify-center gap-1 transition <%= (typeof activeTab !== 'undefined' && activeTab === 'links') ? 'text-purple-400 font-bold' : 'text-slate-400 hover:text-slate-200' %>">
-        <i class="fa-solid fa-link text-base"></i>
-        <span class="text-[10px]">Slugs</span>
-      </a>
+    <a href="/admin/portals" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition <%= (typeof activeTab !== 'undefined' && activeTab === 'portals') ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/40' : 'text-slate-300 hover:text-white hover:bg-slate-800' %>" title="Site Direct Links">
+      <i class="fa-solid fa-compass text-xs text-emerald-400"></i>
+      <span class="hidden sm:inline">Sites Links</span>
+    </a>
 
-      <a href="/admin/logs" class="flex flex-col items-center justify-center gap-1 transition <%= (typeof activeTab !== 'undefined' && activeTab === 'logs') ? 'text-cyan-400 font-bold' : 'text-slate-400 hover:text-slate-200' %>">
-        <i class="fa-solid fa-chart-line text-base"></i>
-        <span class="text-[10px]">Logs</span>
-      </a>
-    </div>
-  </nav>
+    <a href="/admin/links" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition <%= (typeof activeTab !== 'undefined' && activeTab === 'links') ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/40' : 'text-slate-300 hover:text-white hover:bg-slate-800' %>" title="Custom Slugs">
+      <i class="fa-solid fa-link text-xs text-purple-400"></i>
+      <span class="hidden sm:inline">Slugs</span>
+    </a>
+
+    <a href="/admin/logs" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition <%= (typeof activeTab !== 'undefined' && activeTab === 'logs') ? 'bg-cyan-600 text-white shadow-lg shadow-cyan-600/40' : 'text-slate-300 hover:text-white hover:bg-slate-800' %>" title="Audit Logs">
+      <i class="fa-solid fa-chart-line text-xs text-cyan-400"></i>
+      <span class="hidden sm:inline">Logs</span>
+    </a>
+
+    <div class="h-4 w-[1px] bg-slate-700 mx-1"></div>
+
+    <!-- Quick UI Size Toggle In Dock -->
+    <button 
+      type="button" 
+      onclick="toggleSizeMode()" 
+      class="p-2 rounded-full text-slate-300 hover:text-white hover:bg-slate-800 transition" 
+      title="Toggle Big Size UI"
+    >
+      <i class="fa-solid fa-text-height text-xs"></i>
+    </button>
+
+    <!-- Quick Theme Toggle In Dock -->
+    <button 
+      type="button" 
+      onclick="toggleThemeMode()" 
+      class="p-2 rounded-full text-slate-300 hover:text-white hover:bg-slate-800 transition" 
+      title="Toggle Lite / Dark Mode"
+    >
+      <i class="fa-solid fa-circle-half-stroke text-xs"></i>
+    </button>
+  </aside>
   <% } %>
 
   <!-- Main Content View -->
@@ -172,7 +334,7 @@
     <%- body %>
   </main>
 
-  <footer class="hidden md:block border-t border-slate-900 py-6 text-center text-xs text-slate-500 mt-12">
+  <footer class="border-t border-slate-900 py-6 text-center text-xs text-slate-500 mt-12">
     <span>MultiVerify &bull; Universal QR Verification Gateway &bull; DARI, Pakistan, India, Afghanistan</span>
   </footer>
 
@@ -183,6 +345,54 @@
         drawer.classList.toggle('hidden');
       }
     }
+
+    // Persist and apply UI theme (Lite vs Dark)
+    function applyTheme(theme) {
+      const icon = document.getElementById('theme-icon');
+      const text = document.getElementById('theme-text');
+      if (theme === 'lite') {
+        document.body.classList.add('theme-lite');
+        if (icon) { icon.className = 'fa-solid fa-moon text-indigo-400'; }
+        if (text) { text.textContent = 'Dark UI'; }
+      } else {
+        document.body.classList.remove('theme-lite');
+        if (icon) { icon.className = 'fa-solid fa-sun text-amber-400'; }
+        if (text) { text.textContent = 'Lite UI'; }
+      }
+      localStorage.setItem('mv_theme', theme);
+    }
+
+    function toggleThemeMode() {
+      const isLite = document.body.classList.contains('theme-lite');
+      applyTheme(isLite ? 'dark' : 'lite');
+    }
+
+    // Persist and apply UI Size (Big vs Standard)
+    function applySize(size) {
+      const text = document.getElementById('size-text');
+      if (size === 'big') {
+        document.body.classList.add('size-big');
+        if (text) { text.textContent = 'Standard UI'; }
+      } else {
+        document.body.classList.remove('size-big');
+        if (text) { text.textContent = 'Big UI'; }
+      }
+      localStorage.setItem('mv_ui_size', size);
+    }
+
+    function toggleSizeMode() {
+      const isBig = document.body.classList.contains('size-big');
+      applySize(isBig ? 'standard' : 'big');
+    }
+
+    // Initialize saved preferences
+    (function initUIPreferences() {
+      const savedTheme = localStorage.getItem('mv_theme') || 'dark';
+      applyTheme(savedTheme);
+
+      const savedSize = localStorage.getItem('mv_ui_size') || 'standard';
+      applySize(savedSize);
+    })();
   </script>
 </body>
 </html>
