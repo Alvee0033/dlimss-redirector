@@ -1,20 +1,16 @@
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 py-6">
 
   <!-- Header -->
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
     <div>
-      <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 text-xs font-semibold mb-2">
-        <i class="fa-solid fa-chart-line"></i>
-        <span>Traffic Intelligence</span>
-      </div>
-      <h1 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">Real-Time Audit Logs</h1>
-      <p class="text-slate-400 text-xs sm:text-sm mt-0.5">
-        Live inspection of scans, forwarded destination queries, and client network details.
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900">Activity Logs</h1>
+      <p class="text-slate-600 text-sm mt-1">
+        Recent QR scans and redirect visits.
       </p>
     </div>
 
-    <form method="POST" action="/admin/logs/clear" onsubmit="return confirm('Clear all click logs?');" class="self-start sm:self-auto">
-      <button type="submit" class="text-xs font-semibold px-3.5 py-2.5 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20 hover:bg-rose-500/20 transition flex items-center gap-2">
+    <form method="POST" action="/admin/logs/clear" onsubmit="return confirm('Clear all logs?');">
+      <button type="submit" class="text-sm font-bold px-4 py-2.5 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 transition flex items-center gap-2">
         <i class="fa-solid fa-trash text-xs"></i>
         <span>Clear Logs</span>
       </button>
@@ -22,86 +18,44 @@
   </div>
 
   <% if (logs.length === 0) { %>
-    <div class="py-16 text-center text-slate-500 bg-slate-900 border border-slate-800 rounded-2xl p-6">
-      <i class="fa-solid fa-hourglass-start text-4xl mb-3 text-slate-700"></i>
-      <p class="text-base font-semibold text-slate-300">No clicks recorded yet</p>
-      <p class="text-xs mt-1 text-slate-500">Scan any generated QR or visit a routing link to see live entries</p>
+    <div class="py-16 text-center text-slate-500 bg-white border border-slate-200 rounded-2xl p-6">
+      <p class="text-lg font-bold text-slate-700">No logs yet</p>
+      <p class="text-sm mt-1 text-slate-500">Scan any generated QR or visit a redirect URL to see entries</p>
     </div>
   <% } else { %>
 
-    <!-- Mobile View: Cards (< md) -->
-    <div class="block md:hidden space-y-3 mb-8">
-      <% logs.forEach(log => { %>
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-md space-y-2.5">
-          <div class="flex items-start justify-between gap-2">
-            <div>
-              <span class="font-mono text-xs font-bold text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/20">
-                <%= log.incoming_path || log.matched_type || 'direct' %>
-              </span>
-              <% if (log.incoming_query) { %>
-                <span class="font-mono text-[10px] text-emerald-400 ml-1">?<%= log.incoming_query %></span>
-              <% } %>
-            </div>
-            <span class="text-[10px] text-slate-500 whitespace-nowrap">
-              <%= new Date(log.timestamp).toLocaleTimeString() %>
-            </span>
-          </div>
+    <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+      <div class="p-4 sm:p-5 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
+        <h2 class="text-base font-bold text-slate-800">Visit History (<%= logs.length %>)</h2>
+      </div>
 
-          <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800/80 text-[11px] font-mono text-slate-300 break-all">
-            <span class="text-[9px] text-slate-500 uppercase block font-sans font-semibold mb-0.5">Forwarded Target</span>
-            <%= log.forwarded_to %>
-          </div>
-
-          <div class="flex items-center justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-800/50">
-            <span class="font-mono text-slate-300"><%= log.ip || 'Unknown IP' %></span>
-            <span class="text-[10px] text-slate-500 truncate max-w-[160px]" title="<%= log.user_agent %>"><%= log.user_agent %></span>
-          </div>
-        </div>
-      <% }) %>
-    </div>
-
-    <!-- Desktop View: Table (>= md) -->
-    <div class="hidden md:block bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl mb-8">
-      <div class="overflow-x-auto">
-        <table class="w-full text-left text-xs">
-          <thead class="bg-slate-950/60 text-slate-400 uppercase tracking-wider border-b border-slate-800">
-            <tr>
-              <th class="px-5 py-3.5 font-semibold">Timestamp</th>
-              <th class="px-5 py-3.5 font-semibold">Incoming Path</th>
-              <th class="px-5 py-3.5 font-semibold">Forwarded Destination</th>
-              <th class="px-5 py-3.5 font-semibold">Passed Query</th>
-              <th class="px-5 py-3.5 font-semibold">Client / Device</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-800/60">
-            <% logs.forEach(log => { %>
-              <tr class="hover:bg-slate-800/20 transition">
-                <td class="px-5 py-3 text-slate-400 whitespace-nowrap">
-                  <%= new Date(log.timestamp).toLocaleString() %>
-                </td>
-                <td class="px-5 py-3 font-mono font-medium text-indigo-400">
+      <div class="divide-y divide-slate-200">
+        <% logs.forEach(log => { %>
+          <div class="p-4 sm:p-5 hover:bg-slate-50 transition flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-sm">
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-mono text-sm font-bold bg-blue-100 text-blue-800 px-2.5 py-0.5 rounded-lg">
                   <%= log.incoming_path || log.matched_type %>
-                </td>
-                <td class="px-5 py-3 max-w-sm truncate font-mono text-slate-300" title="<%= log.forwarded_to %>">
-                  <%= log.forwarded_to %>
-                </td>
-                <td class="px-5 py-3 font-mono">
-                  <% if (log.incoming_query) { %>
-                    <span class="text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-                      ?<%= log.incoming_query %>
-                    </span>
-                  <% } else { %>
-                    <span class="text-slate-600">none</span>
-                  <% } %>
-                </td>
-                <td class="px-5 py-3 text-slate-400">
-                  <div class="text-[11px] text-slate-300 font-mono"><%= log.ip %></div>
-                  <div class="text-[10px] text-slate-500 truncate max-w-xs" title="<%= log.user_agent %>"><%= log.user_agent %></div>
-                </td>
-              </tr>
-            <% }) %>
-          </tbody>
-        </table>
+                </span>
+                <% if (log.incoming_query) { %>
+                  <span class="font-mono text-xs text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                    ?<%= log.incoming_query %>
+                  </span>
+                <% } %>
+                <span class="text-xs text-slate-400">
+                  <%= new Date(log.timestamp).toLocaleString() %>
+                </span>
+              </div>
+              <div class="font-mono text-xs text-slate-600 mt-1 truncate" title="<%= log.forwarded_to %>">
+                Forwarded &rarr; <%= log.forwarded_to %>
+              </div>
+            </div>
+
+            <div class="text-xs text-slate-500 text-right sm:self-center font-mono">
+              <%= log.ip || 'Unknown IP' %>
+            </div>
+          </div>
+        <% }) %>
       </div>
     </div>
 

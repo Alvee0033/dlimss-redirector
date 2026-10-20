@@ -1,24 +1,25 @@
 <div class="min-h-[80vh] flex items-center justify-center px-4">
   <div class="max-w-md w-full">
-    <div class="text-center mb-8">
-      <div class="inline-flex p-3 rounded-2xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 mb-3 shadow-inner">
-        <i class="fa-solid fa-lock text-2xl"></i>
+    
+    <div class="text-center mb-6">
+      <div class="inline-flex p-3 rounded-2xl bg-blue-600 text-white text-2xl mb-3 shadow">
+        <i class="fa-solid fa-lock"></i>
       </div>
-      <h1 class="text-2xl font-bold tracking-tight text-white">Admin Access</h1>
-      <p class="text-slate-400 text-sm mt-1">Authenticate to manage redirection rules and links</p>
+      <h1 class="text-2xl font-extrabold text-slate-900">Admin Login</h1>
+      <p class="text-slate-600 text-sm mt-1">Enter your password to manage redirects</p>
     </div>
 
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur-xl">
+    <div class="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-md">
       <% if (error) { %>
-        <div class="mb-5 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-sm flex items-center gap-2">
-          <i class="fa-solid fa-triangle-exclamation"></i>
+        <div class="mb-5 p-3.5 rounded-xl bg-rose-50 border border-rose-300 text-rose-800 text-sm font-semibold flex items-center gap-2">
+          <i class="fa-solid fa-triangle-exclamation text-rose-600"></i>
           <span><%= error %></span>
         </div>
       <% } %>
 
       <form method="POST" action="/admin/login" id="login-form" class="space-y-4">
         <div>
-          <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Password</label>
+          <label class="block text-sm font-bold text-slate-700 mb-1.5">Password</label>
           <div class="relative">
             <input 
               type="password" 
@@ -26,22 +27,22 @@
               id="admin-password-input"
               required 
               autocomplete="current-password"
-              placeholder="Enter admin password..." 
+              placeholder="Enter password..." 
               autofocus
-              class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition pr-10"
+              class="w-full rounded-xl px-4 py-3.5 text-base text-slate-900 pr-11"
             >
             <button 
               type="button" 
               onclick="togglePasswordVisibility()" 
-              class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-500 hover:text-slate-300 transition"
+              class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-700 transition"
               title="Show/Hide Password"
             >
-              <i class="fa-regular fa-eye text-sm" id="pwd-toggle-icon"></i>
+              <i class="fa-regular fa-eye text-base" id="pwd-toggle-icon"></i>
             </button>
           </div>
         </div>
 
-        <!-- Remember Password Checkbox -->
+        <!-- Remember Password -->
         <div class="flex items-center justify-between pt-1">
           <label class="flex items-center gap-2.5 cursor-pointer select-none">
             <input 
@@ -49,33 +50,34 @@
               name="remember_me" 
               id="remember-me-checkbox"
               value="1"
-              class="w-4 h-4 rounded bg-slate-950 border-slate-700 text-indigo-600 focus:ring-indigo-500 focus:ring-offset-slate-900 cursor-pointer"
+              class="w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
             >
-            <span class="text-xs font-medium text-slate-300">Remember password on this device</span>
+            <span class="text-sm font-bold text-slate-700">Remember password</span>
           </label>
         </div>
 
         <button 
           type="submit" 
-          class="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-semibold transition shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2 active:scale-[0.99]"
+          class="w-full py-3.5 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-base font-bold transition shadow flex items-center justify-center gap-2"
         >
-          <span>Sign In</span>
-          <i class="fa-solid fa-arrow-right text-xs"></i>
+          <span>Login</span>
+          <i class="fa-solid fa-arrow-right text-sm"></i>
         </button>
       </form>
 
-      <div class="mt-6 pt-6 border-t border-slate-800/60 flex items-center justify-between text-xs text-slate-500">
-        <span>Password secured</span>
+      <div class="mt-5 pt-5 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
+        <span>MultiVerify</span>
         <button 
           type="button" 
           onclick="clearSavedPassword()" 
           id="clear-pwd-btn"
-          class="text-slate-500 hover:text-rose-400 transition hidden"
+          class="text-rose-600 hover:underline font-bold hidden"
         >
-          Clear saved password
+          Forget saved password
         </button>
       </div>
     </div>
+
   </div>
 </div>
 
@@ -85,14 +87,13 @@
     const icon = document.getElementById('pwd-toggle-icon');
     if (input.type === 'password') {
       input.type = 'text';
-      icon.className = 'fa-regular fa-eye-slash text-sm';
+      icon.className = 'fa-regular fa-eye-slash text-base';
     } else {
       input.type = 'password';
-      icon.className = 'fa-regular fa-eye text-sm';
+      icon.className = 'fa-regular fa-eye text-base';
     }
   }
 
-  // Handle local credential retention if remember password is checked
   (function handleRememberPassword() {
     const pwdInput = document.getElementById('admin-password-input');
     const remCheckbox = document.getElementById('remember-me-checkbox');
