@@ -82,11 +82,12 @@ app.get('/admin/logout', (req, res) => {
 // Dashboard: Verification Sites Manager (Root Admin)
 app.get('/admin', requireAuth, (req, res) => {
   const sites = db.prepare('SELECT * FROM sites ORDER BY id ASC').all();
-  const baseUrl = `${req.protocol}://${req.get('host')}`;
+  const baseUrl = process.env.PUBLIC_DOMAIN || `${req.protocol}://${req.get('host')}`;
 
   renderWithLayout(res, 'index', {
     title: 'Verification Sites - MultiVerify',
     isAuthenticated: true,
+    activeTab: 'sites',
     sites,
     baseUrl,
     success: req.query.success || null,
@@ -94,66 +95,74 @@ app.get('/admin', requireAuth, (req, res) => {
   });
 });
 
-// Create Site Portal
-app.post('/admin/sites', requireAuth, (req, res) => {
-  let { key_name, title, base_url, append_mode, query_param_name } = req.body;
-  if (!key_name || !base_url || !title) {
-    return res.redirect('/admin?error=Missing+required+fields');
+// Direct Portals Hub Page (1-Click Launchpad)
+app.get('/admin/portals', requireAuth, (req, res) => {
+  const sites = db.prepare('SELECT * FROM sites ORDER BY id ASC').all();
+  const baseUrl = process.env.PUBLIC_DOMAIN || `${req.protocol}://${req.get('host')}`;
+
+  renderWithLayout(res, 'portals', {
+    title: 'Direct Portals Hub - MultiVerify',
+    isAuthenticated: true,
+    activeTab: 'portals',
+    sites,
+    baseUrl
+  });
+});
+
+// Custom Slugs / Shortlinks Page
+app.get('/admin/links', requireAuth, (req, res) => {
+  const links = db.prepare('SELECT * FROM links ORDER BY id DESC').all();
+  const baseUrl = process.env.PUBLIC_DOMAIN || `${req.protocol}://${req.get('host')}`;
+
+  renderWithLayout(res, 'links', {
+    title: 'Custom Slugs - MultiVerify',
+    isAuthenticated: true,
+    activeTab: 'links',
+    links,
+    baseUrl,
+    success: req.query.success || null,
+    error: req.query.error || null
+  });
+});
+
+// Create Custom Link
+app.post('/admin/links', requireAuth, (req, res) => {
+  let { slug, target_url, title } = req.body;
+  if (!slug || !target_url) {
+    return res.redirect('/admin/links?error=Missing+slug+or+target+URL');
   }
 
-  key_name = key_name.trim().toLowerCase().replace(/^\/+|\/+$/g, '');
-  base_url = base_url.trim();
+  slug = slug.trim().toLowerCase().replace(/^\/+|\/+$/g, '');
+  target_url = target_url.trim();
 
   try {
     const stmt = db.prepare(`
-      INSERT INTO sites (key_name, title, base_url, append_mode, query_param_name)
-      VALUES (?, ?, ?, ?, ?)
+      INSERT INTO links (slug, target_url, title, is_active)
+      VALUES (?, ?, ?, 1)
     `);
-    stmt.run(key_name, title.trim(), base_url, append_mode || 'query', query_param_name ? query_param_name.trim() : 'id');
-    res.redirect('/admin?success=Verification+portal+configured');
+    stmt.run(slug, target_url, (title || '').trim());
+    res.redirect('/admin/links?success=Custom+slug+created');
   } catch (err) {
     console.error(err);
-    res.redirect('/admin?error=' + encodeURIComponent(err.message.includes('UNIQUE') ? 'A portal with that key already exists' : err.message));
+    res.redirect('/admin/links?error=' + encodeURIComponent(err.message.includes('UNIQUE') ? 'Slug already in use' : err.message));
   }
 });
 
-// Edit Site Portal
-app.post('/admin/sites/:id/edit', requireAuth, (req, res) => {
+// Toggle Custom Link
+app.post('/admin/links/:id/toggle', requireAuth, (req, res) => {
   const { id } = req.params;
-  let { key_name, title, base_url, append_mode, query_param_name } = req.body;
-
-  key_name = key_name.trim().toLowerCase().replace(/^\/+|\/+$/g, '');
-  base_url = base_url.trim();
-
-  try {
-    const stmt = db.prepare(`
-      UPDATE sites 
-      SET key_name = ?, title = ?, base_url = ?, append_mode = ?, query_param_name = ?, updated_at = CURRENT_TIMESTAMP
-      WHERE id = ?
-    `);
-    stmt.run(key_name, title.trim(), base_url, append_mode || 'query', query_param_name ? query_param_name.trim() : 'id', id);
-    res.redirect('/admin?success=Portal+updated+successfully');
-  } catch (err) {
-    console.error(err);
-    res.redirect('/admin?error=' + encodeURIComponent(err.message));
+  const link = db.prepare('SELECT is_active FROM links WHERE id = ?').get(id);
+  if (link) {
+    db.prepare('UPDATE links SET is_active = ? WHERE id = ?').run(link.is_active ? 0 : 1, id);
   }
+  res.redirect('/admin/links');
 });
 
-// Toggle Site Status
-app.post('/admin/sites/:id/toggle', requireAuth, (req, res) => {
+// Delete Custom Link
+app.post('/admin/links/:id/delete', requireAuth, (req, res) => {
   const { id } = req.params;
-  const site = db.prepare('SELECT is_active FROM sites WHERE id = ?').get(id);
-  if (site) {
-    db.prepare('UPDATE sites SET is_active = ? WHERE id = ?').run(site.is_active ? 0 : 1, id);
-  }
-  res.redirect('/admin');
-});
-
-// Delete Site
-app.post('/admin/sites/:id/delete', requireAuth, (req, res) => {
-  const { id } = req.params;
-  db.prepare('DELETE FROM sites WHERE id = ?').run(id);
-  res.redirect('/admin?success=Portal+deleted');
+  db.prepare('DELETE FROM links WHERE id = ?').run(id);
+  res.redirect('/admin/links?success=Slug+deleted');
 });
 
 // QR Code Generation Endpoint
@@ -181,12 +190,12 @@ app.get('/admin/sites/:id/qr', requireAuth, async (req, res) => {
   }
 });
 
-
 app.get('/admin/logs', requireAuth, (req, res) => {
   const logs = db.prepare('SELECT * FROM click_logs ORDER BY id DESC LIMIT 250').all();
   renderWithLayout(res, 'logs', {
     title: 'Audit Logs - MultiVerify',
     isAuthenticated: true,
+    activeTab: 'logs',
     logs
   });
 });

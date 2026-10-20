@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title><%= typeof title !== 'undefined' ? title : 'Universal QR Redirector' %></title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -24,50 +24,165 @@
       }
     }
   </script>
+  <style>
+    /* Mobile-first touch improvements */
+    button, a, input, select {
+      touch-action: manipulation;
+    }
+    .safe-bottom {
+      padding-bottom: env(safe-area-inset-bottom, 1rem);
+    }
+  </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans selection:bg-indigo-500 selection:text-white">
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans selection:bg-indigo-500 selection:text-white pb-24 md:pb-6">
 
-  <!-- Navigation -->
   <% if (typeof isAuthenticated !== 'undefined' && isAuthenticated) { %>
-  <nav class="bg-slate-900/90 backdrop-blur border-b border-slate-800 sticky top-0 z-50">
+  <!-- Sticky Top Navigation -->
+  <header class="bg-slate-900/95 backdrop-blur-md border-b border-slate-800/80 sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16">
-        <div class="flex items-center space-x-3">
-          <div class="bg-gradient-to-tr from-indigo-500 to-emerald-500 p-2 rounded-xl text-white shadow-lg shadow-indigo-500/20">
-            <i class="fa-solid fa-qrcode text-lg"></i>
+        
+        <!-- Brand Logo -->
+        <a href="/admin" class="flex items-center gap-2.5">
+          <div class="bg-gradient-to-tr from-indigo-500 to-emerald-400 p-2 rounded-xl text-white shadow-lg shadow-indigo-500/20 flex items-center justify-center w-9 h-9">
+            <i class="fa-solid fa-qrcode text-base"></i>
           </div>
           <div>
-            <span class="font-bold text-lg tracking-tight bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">MultiVerify</span>
-            <span class="text-xs ml-2 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium">QR Router</span>
+            <div class="flex items-center gap-1.5">
+              <span class="font-extrabold text-base sm:text-lg tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">MultiVerify</span>
+              <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            </div>
+            <p class="text-[10px] text-slate-400 tracking-wider uppercase font-semibold leading-none">QR Gateway Hub</p>
           </div>
-        </div>
+        </a>
 
-        <div class="flex items-center space-x-3 sm:space-x-4">
-          <a href="/admin" class="text-sm font-medium hover:text-indigo-400 transition flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-slate-800/60">
-            <i class="fa-solid fa-globe text-xs text-indigo-400"></i> Verification Sites
+        <!-- Desktop Navigation Links -->
+        <nav class="hidden md:flex items-center space-x-1.5">
+          <a href="/admin" class="text-xs font-semibold px-3 py-2 rounded-xl transition flex items-center gap-2 <%= (typeof activeTab !== 'undefined' && activeTab === 'sites') ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' : 'text-slate-300 hover:text-white hover:bg-slate-800/70' %>">
+            <i class="fa-solid fa-layer-group text-xs"></i>
+            <span>Sites & Rules</span>
           </a>
-          <a href="/admin/links" class="text-sm font-medium hover:text-indigo-400 transition flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-slate-800/60">
-            <i class="fa-solid fa-link text-xs text-purple-400"></i> Custom Slugs
+
+          <a href="/admin/portals" class="text-xs font-semibold px-3 py-2 rounded-xl transition flex items-center gap-2 <%= (typeof activeTab !== 'undefined' && activeTab === 'portals') ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' : 'text-slate-300 hover:text-white hover:bg-slate-800/70' %>">
+            <i class="fa-solid fa-compass text-xs text-emerald-400"></i>
+            <span>Direct Portals</span>
           </a>
-          <a href="/admin/logs" class="text-sm font-medium hover:text-indigo-400 transition flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-slate-800/60">
-            <i class="fa-solid fa-clock-rotate-left text-xs text-emerald-400"></i> Audit Logs
+
+          <a href="/admin/links" class="text-xs font-semibold px-3 py-2 rounded-xl transition flex items-center gap-2 <%= (typeof activeTab !== 'undefined' && activeTab === 'links') ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' : 'text-slate-300 hover:text-white hover:bg-slate-800/70' %>">
+            <i class="fa-solid fa-link text-xs text-purple-400"></i>
+            <span>Custom Slugs</span>
           </a>
-          <a href="/admin/logout" class="text-sm font-medium text-rose-400 hover:text-rose-300 transition flex items-center gap-1 px-3 py-1.5 rounded-lg hover:bg-rose-500/10 border border-rose-500/20">
-            <i class="fa-solid fa-arrow-right-from-bracket text-xs"></i> Logout
+
+          <a href="/admin/logs" class="text-xs font-semibold px-3 py-2 rounded-xl transition flex items-center gap-2 <%= (typeof activeTab !== 'undefined' && activeTab === 'logs') ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' : 'text-slate-300 hover:text-white hover:bg-slate-800/70' %>">
+            <i class="fa-solid fa-chart-line text-xs text-cyan-400"></i>
+            <span>Audit Logs</span>
           </a>
+        </nav>
+
+        <!-- Right Side: Portals Quick Jump & Logout -->
+        <div class="flex items-center gap-2">
+          <a href="/admin/portals" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 hover:bg-emerald-500/20 transition">
+            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+            <span>Launch Portals</span>
+          </a>
+
+          <a href="/admin/logout" class="text-xs font-semibold px-3 py-1.5 rounded-xl text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 border border-rose-500/20 transition flex items-center gap-1.5">
+            <i class="fa-solid fa-right-from-bracket text-[11px]"></i>
+            <span class="hidden sm:inline">Logout</span>
+          </a>
+
+          <!-- Mobile Hamburger Toggle -->
+          <button 
+            type="button" 
+            onclick="toggleMobileDrawer()" 
+            class="md:hidden p-2 rounded-xl bg-slate-800/80 text-slate-300 hover:text-white border border-slate-700/60 transition"
+            aria-label="Toggle menu"
+          >
+            <i class="fa-solid fa-bars text-sm"></i>
+          </button>
         </div>
       </div>
+    </div>
+
+    <!-- Mobile Drawer Menu (Collapsible) -->
+    <div id="mobile-drawer" class="hidden md:hidden border-t border-slate-800 bg-slate-900/95 px-4 pt-3 pb-4 space-y-1.5 backdrop-blur-md">
+      <a href="/admin" class="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold <%= (typeof activeTab !== 'undefined' && activeTab === 'sites') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-slate-800' %>">
+        <div class="flex items-center gap-2.5">
+          <i class="fa-solid fa-layer-group text-indigo-400 text-sm w-5"></i>
+          <span>Verification Sites</span>
+        </div>
+        <i class="fa-solid fa-chevron-right text-xs opacity-60"></i>
+      </a>
+
+      <a href="/admin/portals" class="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold <%= (typeof activeTab !== 'undefined' && activeTab === 'portals') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-slate-800' %>">
+        <div class="flex items-center gap-2.5">
+          <i class="fa-solid fa-compass text-emerald-400 text-sm w-5"></i>
+          <span>Direct Portals Hub</span>
+        </div>
+        <span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full font-bold">1-Click Launch</span>
+      </a>
+
+      <a href="/admin/links" class="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold <%= (typeof activeTab !== 'undefined' && activeTab === 'links') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-slate-800' %>">
+        <div class="flex items-center gap-2.5">
+          <i class="fa-solid fa-link text-purple-400 text-sm w-5"></i>
+          <span>Custom Slugs</span>
+        </div>
+        <i class="fa-solid fa-chevron-right text-xs opacity-60"></i>
+      </a>
+
+      <a href="/admin/logs" class="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold <%= (typeof activeTab !== 'undefined' && activeTab === 'logs') ? 'bg-indigo-600 text-white' : 'text-slate-300 hover:bg-slate-800' %>">
+        <div class="flex items-center gap-2.5">
+          <i class="fa-solid fa-chart-line text-cyan-400 text-sm w-5"></i>
+          <span>Audit Logs</span>
+        </div>
+        <i class="fa-solid fa-chevron-right text-xs opacity-60"></i>
+      </a>
+    </div>
+  </header>
+
+  <!-- Mobile Fixed Bottom Navigation Bar -->
+  <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 safe-bottom">
+    <div class="grid grid-cols-4 h-16">
+      <a href="/admin" class="flex flex-col items-center justify-center gap-1 transition <%= (typeof activeTab !== 'undefined' && activeTab === 'sites') ? 'text-indigo-400 font-bold' : 'text-slate-400 hover:text-slate-200' %>">
+        <i class="fa-solid fa-layer-group text-base"></i>
+        <span class="text-[10px]">Sites</span>
+      </a>
+
+      <a href="/admin/portals" class="flex flex-col items-center justify-center gap-1 transition relative <%= (typeof activeTab !== 'undefined' && activeTab === 'portals') ? 'text-emerald-400 font-bold' : 'text-slate-400 hover:text-slate-200' %>">
+        <span class="absolute top-2 right-6 w-2 h-2 rounded-full bg-emerald-400"></span>
+        <i class="fa-solid fa-compass text-base"></i>
+        <span class="text-[10px]">Portals</span>
+      </a>
+
+      <a href="/admin/links" class="flex flex-col items-center justify-center gap-1 transition <%= (typeof activeTab !== 'undefined' && activeTab === 'links') ? 'text-purple-400 font-bold' : 'text-slate-400 hover:text-slate-200' %>">
+        <i class="fa-solid fa-link text-base"></i>
+        <span class="text-[10px]">Slugs</span>
+      </a>
+
+      <a href="/admin/logs" class="flex flex-col items-center justify-center gap-1 transition <%= (typeof activeTab !== 'undefined' && activeTab === 'logs') ? 'text-cyan-400 font-bold' : 'text-slate-400 hover:text-slate-200' %>">
+        <i class="fa-solid fa-chart-line text-base"></i>
+        <span class="text-[10px]">Logs</span>
+      </a>
     </div>
   </nav>
   <% } %>
 
+  <!-- Main Content View -->
   <main class="flex-grow">
     <%- body %>
   </main>
 
-  <footer class="border-t border-slate-900 py-6 text-center text-xs text-slate-500 mt-12">
+  <footer class="hidden md:block border-t border-slate-900 py-6 text-center text-xs text-slate-500 mt-12">
     <span>MultiVerify &bull; Universal QR Verification Gateway &bull; DARI, Pakistan, India, Afghanistan</span>
   </footer>
 
+  <script>
+    function toggleMobileDrawer() {
+      const drawer = document.getElementById('mobile-drawer');
+      if (drawer) {
+        drawer.classList.toggle('hidden');
+      }
+    }
+  </script>
 </body>
 </html>
