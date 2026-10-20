@@ -433,9 +433,9 @@ app.use((req, res, next) => {
     }
   }
 
-  // 4. Default root route
+  // 4. Default root route: render the public Super Shop landing page
   if (req.path === '/') {
-    return res.redirect('/admin');
+    return res.render('shop');
   }
 
   // 5. 404

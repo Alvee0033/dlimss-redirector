@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Droocry &bull; Fresh Organic Grocery Super Store</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background-color: #FAFAF7;
+      color: #1E293B;
+      overflow-x: hidden;
+    }
+    .hero-diagonal {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 58%;
+      height: 100%;
+      background: linear-gradient(135deg, #FDBA12 0%, #F59E0B 100%);
+      clip-path: polygon(28% 0%, 100% 0%, 100% 100%, 0% 100%);
+      z-index: 1;
+    }
+    @media (max-width: 1024px) {
+      .hero-diagonal {
+        position: relative;
+        width: 100%;
+        height: 380px;
+        clip-path: none;
+        border-radius: 2rem;
+      }
+    }
+  </style>
+</head>
+<body class="selection:bg-amber-400 selection:text-slate-900">
+
+  <!-- Top Announcement Bar -->
+  <div class="bg-slate-900 text-white text-xs py-2 px-4 text-center font-medium">
+    🎉 Free Same-Day Express Delivery on All Orders Over $35 &bull; Code: <span class="text-amber-400 font-bold">FRESH35</span>
+  </div>
+
+  <!-- Navigation Bar -->
+  <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between relative z-20">
+    <div class="flex items-center gap-2">
+      <!-- Droocry Logo exactly as mockup -->
+      <a href="/" class="flex items-center gap-1.5 text-2xl font-black tracking-tight text-slate-900">
+        <span>Droo</span><span class="text-amber-500">cry</span>
+        <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block ml-0.5"></span>
+      </a>
+    </div>
+
+    <!-- Desktop Menu Links -->
+    <div class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
+      <a href="#home" class="text-amber-500 hover:text-amber-600 transition">Home</a>
+      <a href="#categories" class="hover:text-slate-900 transition">Services</a>
+      <a href="#about" class="hover:text-slate-900 transition">About Us</a>
+      <a href="#categories" class="hover:text-slate-900 transition">Categories</a>
+      <a href="#contact" class="hover:text-slate-900 transition">Contact</a>
+    </div>
+
+    <!-- Right Actions -->
+    <div class="flex items-center gap-3">
+      <button onclick="toggleCart()" class="relative p-2.5 rounded-full bg-white border border-slate-200 text-slate-700 hover:text-amber-500 transition shadow-sm">
+        <i class="fa-solid fa-basket-shopping text-base"></i>
+        <span id="cart-badge" class="absolute -top-1 -right-1 bg-amber-500 text-white font-extrabold text-[10px] w-5 h-5 rounded-full flex items-center justify-center">2</span>
+      </button>
+
+      <a href="#products" class="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-full border-2 border-sky-400 text-sky-600 hover:bg-sky-50 font-bold text-xs uppercase tracking-wider transition">
+        Register
+      </a>
+    </div>
+  </nav>
+
+  <!-- Hero Section (Matches Mockup Angle & Composition) -->
+  <section id="home" class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-16 lg:py-20 min-h-[580px] flex items-center overflow-hidden">
+    <!-- Desktop Yellow Diagonal Graphic -->
+    <div class="hidden lg:block hero-diagonal"></div>
+
+    <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center w-full">
+      
+      <!-- Left Copy (Headline & CTA) -->
+      <div class="lg:col-span-6 space-y-6">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-xs">
+          <i class="fa-solid fa-seedling text-emerald-600"></i>
+          <span>100% Organic & Certified Farm Produce</span>
+        </div>
+
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 leading-[1.15] tracking-tight">
+          Enjoy <span class="text-emerald-500 underline decoration-amber-400 decoration-wavy decoration-2">Healthy Life</span><br>
+          Getting Fresh Grocery
+        </h1>
+
+        <p class="text-slate-600 text-sm sm:text-base leading-relaxed max-w-lg">
+          It is a long established fact that organic and natural fresh farm food boosts longevity and overall family wellness. Delivered farm-to-table in under 45 minutes.
+        </p>
+
+        <!-- Search / CTA Row -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
+          <a href="#products" class="px-7 py-4 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-sm shadow-lg shadow-sky-500/25 transition flex items-center justify-center gap-2">
+            <span>Start Shopping</span>
+            <i class="fa-solid fa-arrow-right text-xs"></i>
+          </a>
+
+          <div class="flex items-center gap-3 px-4 py-3 bg-white/80 backdrop-blur rounded-xl border border-slate-200 shadow-sm">
+            <div class="w-10 h-10 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center font-bold">
+              <i class="fa-solid fa-truck-fast"></i>
+            </div>
+            <div>
+              <p class="text-xs font-bold text-slate-900">45-Min Fast Delivery</p>
+              <p class="text-[11px] text-slate-500">Directly from partner orchards</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Social Proof Avatars -->
+        <div class="flex items-center gap-4 pt-4 border-t border-slate-200/60 max-w-md">
+          <div class="flex -space-x-2">
+            <img class="inline-block h-9 w-9 rounded-full ring-2 ring-white object-cover" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" alt="Customer">
+            <img class="inline-block h-9 w-9 rounded-full ring-2 ring-white object-cover" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80" alt="Customer">
+            <img class="inline-block h-9 w-9 rounded-full ring-2 ring-white object-cover" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80" alt="Customer">
+            <img class="inline-block h-9 w-9 rounded-full ring-2 ring-white object-cover" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80" alt="Customer">
+          </div>
+          <div>
+            <div class="flex items-center text-amber-400 text-xs">
+              <i class="fa-solid fa-star"></i>
+              <i class="fa-solid fa-star"></i>
+              <i class="fa-solid fa-star"></i>
+              <i class="fa-solid fa-star"></i>
+              <i class="fa-solid fa-star"></i>
+              <span class="ml-1.5 font-bold text-slate-800 text-xs">4.9 / 5.0</span>
+            </div>
+            <p class="text-[11px] text-slate-500 font-medium">Over 14,000 happy families served</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Basket Image with Floating Badges (Mockup Style) -->
+      <div class="lg:col-span-6 relative flex items-center justify-center">
+        <!-- Mobile background block if not desktop -->
+        <div class="lg:hidden absolute inset-0 bg-gradient-to-tr from-amber-400 to-amber-500 rounded-3xl -rotate-2 transform scale-95 shadow-xl"></div>
+
+        <div class="relative z-10 p-4 sm:p-6 w-full max-w-md lg:max-w-none">
+          <img 
+            src="https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=800&q=80" 
+            alt="Fresh Organic Basket"
+            class="rounded-3xl shadow-2xl object-cover w-full h-[320px] sm:h-[400px] border-4 border-white transform hover:scale-[1.01] transition duration-300"
+          >
+
+          <!-- Floating Badge 1: 100% Fresh -->
+          <div class="absolute top-8 right-6 sm:right-8 bg-white/95 backdrop-blur px-4 py-2.5 rounded-2xl shadow-xl flex items-center gap-2.5 border border-slate-100">
+            <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-sm">
+              <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <div>
+              <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Quality</p>
+              <p class="text-xs font-black text-slate-900">100% Fresh</p>
+            </div>
+          </div>
+
+          <!-- Floating Badge 2: Organic Apples Price -->
+          <div class="absolute bottom-8 left-6 sm:left-8 bg-white/95 backdrop-blur px-4 py-2.5 rounded-2xl shadow-xl flex items-center gap-3 border border-slate-100">
+            <div class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center font-bold text-base shadow">
+              <i class="fa-solid fa-apple-whole"></i>
+            </div>
+            <div>
+              <p class="text-xs font-extrabold text-slate-900">Fresh Apple Basket</p>
+              <p class="text-sm font-black text-emerald-600">$11.30 <span class="text-[10px] font-normal text-slate-400">/ 2kg pack</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Popular Categories Carousel / Cards (Matches Mockup bottom row) -->
+  <section id="categories" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h2 class="text-2xl sm:text-3xl font-black text-slate-900">Popular Items</h2>
+        <p class="text-slate-500 text-sm mt-0.5">Hand-picked fresh daily harvesting</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <button class="w-9 h-9 rounded-full border border-slate-300 bg-white hover:bg-slate-50 text-slate-600 flex items-center justify-center transition">
+          <i class="fa-solid fa-chevron-left text-xs"></i>
+        </button>
+        <button class="w-9 h-9 rounded-full bg-sky-500 hover:bg-sky-600 text-white flex items-center justify-center shadow transition">
+          <i class="fa-solid fa-chevron-right text-xs"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- 4 Colored Card Grid as in Mockup (Tomato, Orange, Apple, Capsicum) -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+      
+      <!-- 1. Tomato (Amber/Orange accent) -->
+      <div class="bg-amber-100/70 border border-amber-200/60 rounded-3xl p-4 sm:p-5 text-center flex flex-col justify-between transition hover:-translate-y-1 hover:shadow-lg group">
+        <div>
+          <h3 class="font-black text-base sm:text-lg text-slate-900">Tomato</h3>
+          <p class="text-[11px] font-bold text-amber-800 uppercase tracking-wider mt-0.5">Starting $4.00</p>
+        </div>
+        <div class="my-4 overflow-hidden rounded-2xl bg-white p-2 shadow-inner">
+          <img src="https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&w=400&q=80" alt="Fresh Tomato" class="w-full h-32 sm:h-40 object-cover rounded-xl group-hover:scale-105 transition duration-300">
+        </div>
+        <button onclick="addToCart('Vine Tomatoes', 4.00)" class="w-full py-2 bg-white hover:bg-amber-500 hover:text-white text-slate-800 text-xs font-bold rounded-xl shadow-sm transition">
+          Add to Cart
+        </button>
+      </div>
+
+      <!-- 2. Orange (Golden accent) -->
+      <div class="bg-orange-100/70 border border-orange-200/60 rounded-3xl p-4 sm:p-5 text-center flex flex-col justify-between transition hover:-translate-y-1 hover:shadow-lg group">
+        <div>
+          <h3 class="font-black text-base sm:text-lg text-slate-900">Orange</h3>
+          <p class="text-[11px] font-bold text-orange-800 uppercase tracking-wider mt-0.5">Starting $5.20</p>
+        </div>
+        <div class="my-4 overflow-hidden rounded-2xl bg-white p-2 shadow-inner">
+          <img src="https://images.unsplash.com/photo-1582979512210-99b6a53386f9?auto=format&fit=crop&w=400&q=80" alt="Fresh Orange" class="w-full h-32 sm:h-40 object-cover rounded-xl group-hover:scale-105 transition duration-300">
+        </div>
+        <button onclick="addToCart('Valencia Oranges', 5.20)" class="w-full py-2 bg-white hover:bg-orange-500 hover:text-white text-slate-800 text-xs font-bold rounded-xl shadow-sm transition">
+          Add to Cart
+        </button>
+      </div>
+
+      <!-- 3. Apples (Soft Sage/Green accent) -->
+      <div class="bg-emerald-100/70 border border-emerald-200/60 rounded-3xl p-4 sm:p-5 text-center flex flex-col justify-between transition hover:-translate-y-1 hover:shadow-lg group">
+        <div>
+          <h3 class="font-black text-base sm:text-lg text-slate-900">Apples</h3>
+          <p class="text-[11px] font-bold text-emerald-800 uppercase tracking-wider mt-0.5">Starting $6.50</p>
+        </div>
+        <div class="my-4 overflow-hidden rounded-2xl bg-white p-2 shadow-inner">
+          <img src="https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?auto=format&fit=crop&w=400&q=80" alt="Crisp Apples" class="w-full h-32 sm:h-40 object-cover rounded-xl group-hover:scale-105 transition duration-300">
+        </div>
+        <button onclick="addToCart('Royal Gala Apples', 6.50)" class="w-full py-2 bg-white hover:bg-emerald-600 hover:text-white text-slate-800 text-xs font-bold rounded-xl shadow-sm transition">
+          Add to Cart
+        </button>
+      </div>
+
+      <!-- 4. Capsicum (Soft Rose/Crimson accent) -->
+      <div class="bg-rose-100/70 border border-rose-200/60 rounded-3xl p-4 sm:p-5 text-center flex flex-col justify-between transition hover:-translate-y-1 hover:shadow-lg group">
+        <div>
+          <h3 class="font-black text-base sm:text-lg text-slate-900">Capsicum</h3>
+          <p class="text-[11px] font-bold text-rose-800 uppercase tracking-wider mt-0.5">Starting $3.80</p>
+        </div>
+        <div class="my-4 overflow-hidden rounded-2xl bg-white p-2 shadow-inner">
+          <img src="https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?auto=format&fit=crop&w=400&q=80" alt="Fresh Capsicum" class="w-full h-32 sm:h-40 object-cover rounded-xl group-hover:scale-105 transition duration-300">
+        </div>
+        <button onclick="addToCart('Bell Peppers', 3.80)" class="w-full py-2 bg-white hover:bg-rose-500 hover:text-white text-slate-800 text-xs font-bold rounded-xl shadow-sm transition">
+          Add to Cart
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Featured Items / Product Catalog -->
+  <section id="products" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="text-center max-w-xl mx-auto mb-10">
+      <span class="text-xs font-extrabold text-amber-500 uppercase tracking-widest">Our Selection</span>
+      <h2 class="text-3xl font-black text-slate-900 mt-1">Enjoy Your Favorite Grocery Items</h2>
+      <p class="text-slate-500 text-sm mt-2">Crisp, sweet, and picked at peak harvest to guarantee maximum flavor and nutrition.</p>
+    </div>
+
+    <!-- Product Cards Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      
+      <div class="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm hover:shadow-xl transition flex flex-col justify-between">
+        <div class="relative overflow-hidden rounded-2xl bg-slate-50 mb-4 h-48">
+          <img src="https://images.unsplash.com/photo-1619566636858-adf3ef46400b?auto=format&fit=crop&w=500&q=80" alt="Green Apples" class="w-full h-full object-cover">
+          <span class="absolute top-3 left-3 bg-emerald-500 text-white font-black text-[10px] px-2 py-1 rounded-full uppercase">Organic</span>
+        </div>
+        <div>
+          <div class="flex items-center text-amber-400 text-xs mb-1">
+            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+            <span class="ml-1 text-slate-400 font-bold">(4.8)</span>
+          </div>
+          <h3 class="font-extrabold text-lg text-slate-900">Granny Smith Fresh Apple</h3>
+          <p class="text-xs text-slate-500 mt-1">Tart and crisp, ideal for salads or baking.</p>
+        </div>
+        <div class="flex items-center justify-between mt-4 pt-3 border-t border-slate-100">
+          <span class="text-xl font-black text-slate-900">$3.50 <span class="text-xs text-slate-400 font-normal">/kg</span></span>
+          <button onclick="addToCart('Granny Smith Apple', 3.50)" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded-xl shadow transition">
+            Add
+          </button>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm hover:shadow-xl transition flex flex-col justify-between">
+        <div class="relative overflow-hidden rounded-2xl bg-slate-50 mb-4 h-48">
+          <img src="https://images.unsplash.com/photo-1546470427-0d4db154ceb7?auto=format&fit=crop&w=500&q=80" alt="Sweet Strawberries" class="w-full h-full object-cover">
+          <span class="absolute top-3 left-3 bg-rose-500 text-white font-black text-[10px] px-2 py-1 rounded-full uppercase">Popular</span>
+        </div>
+        <div>
+          <div class="flex items-center text-amber-400 text-xs mb-1">
+            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            <span class="ml-1 text-slate-400 font-bold">(5.0)</span>
+          </div>
+          <h3 class="font-extrabold text-lg text-slate-900">Strawberry Vanilla Punnet</h3>
+          <p class="text-xs text-slate-500 mt-1">Naturally sweet berries harvested this morning.</p>
+        </div>
+        <div class="flex items-center justify-between mt-4 pt-3 border-t border-slate-100">
+          <span class="text-xl font-black text-slate-900">$4.90 <span class="text-xs text-slate-400 font-normal">/box</span></span>
+          <button onclick="addToCart('Strawberry Vanilla Punnet', 4.90)" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded-xl shadow transition">
+            Add
+          </button>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm hover:shadow-xl transition flex flex-col justify-between">
+        <div class="relative overflow-hidden rounded-2xl bg-slate-50 mb-4 h-48">
+          <img src="https://images.unsplash.com/photo-1547514701-42782101795e?auto=format&fit=crop&w=500&q=80" alt="Navel Oranges" class="w-full h-full object-cover">
+          <span class="absolute top-3 left-3 bg-amber-500 text-white font-black text-[10px] px-2 py-1 rounded-full uppercase">Citrus</span>
+        </div>
+        <div>
+          <div class="flex items-center text-amber-400 text-xs mb-1">
+            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+            <span class="ml-1 text-slate-400 font-bold">(4.7)</span>
+          </div>
+          <h3 class="font-extrabold text-lg text-slate-900">Sweet Navel Orange Pack</h3>
+          <p class="text-xs text-slate-500 mt-1">Extra juicy citrus packed with natural Vitamin C.</p>
+        </div>
+        <div class="flex items-center justify-between mt-4 pt-3 border-t border-slate-100">
+          <span class="text-xl font-black text-slate-900">$5.80 <span class="text-xs text-slate-400 font-normal">/3kg</span></span>
+          <button onclick="addToCart('Navel Orange Pack', 5.80)" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded-xl shadow transition">
+            Add
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Newsletter & Delivery Prompt (From mockup bottom banner) -->
+  <section class="max-w-5xl mx-auto px-4 sm:px-6 my-16">
+    <div class="bg-gradient-to-r from-amber-100 via-amber-50 to-emerald-50 rounded-3xl p-8 sm:p-12 border border-amber-200/70 text-center relative overflow-hidden shadow-sm">
+      <h2 class="text-2xl sm:text-3xl font-black text-slate-900">Order Home Delivery Of Groceries</h2>
+      <p class="text-slate-600 text-sm max-w-lg mx-auto mt-2">
+        Enter your delivery address or zip code to see nearby local hubs ready for direct dispatch within minutes.
+      </p>
+
+      <form onsubmit="event.preventDefault(); showOrderAlert();" class="mt-6 flex flex-col sm:flex-row items-center justify-center gap-2 max-w-md mx-auto">
+        <input 
+          type="text" 
+          placeholder="Enter delivery postcode or address..." 
+          class="w-full rounded-full px-5 py-3 text-sm border border-slate-300 shadow-inner focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white"
+          required
+        >
+        <button type="submit" class="w-full sm:w-auto px-7 py-3 rounded-full bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold text-sm shadow transition flex-shrink-0">
+          Check Delivery
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Shopping Cart Drawer (Interactive) -->
+  <div id="cart-drawer" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex justify-end hidden">
+    <div class="bg-white w-full max-w-md h-full flex flex-col p-6 shadow-2xl relative">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+        <h3 class="text-lg font-black text-slate-900">Your Basket</h3>
+        <button onclick="toggleCart()" class="p-2 text-slate-400 hover:text-slate-700">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div class="flex-grow py-4 space-y-3 overflow-y-auto" id="cart-items">
+        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
+          <div>
+            <p class="text-sm font-bold text-slate-900">Vine Tomatoes (1kg)</p>
+            <p class="text-xs text-emerald-600 font-bold">$4.00</p>
+          </div>
+          <span class="text-xs font-bold text-slate-400">Qty: 1</span>
+        </div>
+        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
+          <div>
+            <p class="text-sm font-bold text-slate-900">Royal Gala Apples (2kg)</p>
+            <p class="text-xs text-emerald-600 font-bold">$6.50</p>
+          </div>
+          <span class="text-xs font-bold text-slate-400">Qty: 1</span>
+        </div>
+      </div>
+
+      <div class="pt-4 border-t border-slate-100 space-y-3">
+        <div class="flex items-center justify-between text-base font-extrabold text-slate-900">
+          <span>Subtotal:</span>
+          <span id="cart-total">$10.50</span>
+        </div>
+        <button onclick="checkoutMock()" class="w-full py-3.5 bg-amber-500 hover:bg-amber-600 text-slate-900 font-black rounded-xl text-sm shadow transition">
+          Proceed to Checkout
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer with Discreet Admin Gateway -->
+  <footer class="bg-white border-t border-slate-200 mt-16 py-12 text-slate-500 text-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 sm:grid-cols-4 gap-8 mb-8">
+      <div>
+        <h4 class="font-black text-sm text-slate-900 mb-3">Droocry Mart</h4>
+        <p class="text-slate-500 leading-relaxed">Providing pure organic, farm-fresh fruit and vegetables to families every morning.</p>
+      </div>
+      <div>
+        <h4 class="font-black text-sm text-slate-900 mb-3">Quick Links</h4>
+        <ul class="space-y-1.5 font-medium">
+          <li><a href="#home" class="hover:underline">Home</a></li>
+          <li><a href="#categories" class="hover:underline">Categories</a></li>
+          <li><a href="#products" class="hover:underline">Special Offers</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-black text-sm text-slate-900 mb-3">Customer Support</h4>
+        <ul class="space-y-1.5 font-medium">
+          <li><a href="#" class="hover:underline">Track Your Order</a></li>
+          <li><a href="#" class="hover:underline">Delivery Guidelines</a></li>
+          <li><a href="#" class="hover:underline">Privacy Policy</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-black text-sm text-slate-900 mb-3">Partner Logistics</h4>
+        <ul class="space-y-1.5 font-medium">
+          <li><a href="#" class="hover:underline">Partner Orchards</a></li>
+          <li><a href="#" class="hover:underline">Supplier Network</a></li>
+          <!-- Discreet Admin Portal Link in Footer -->
+          <li><a href="/admin" class="text-slate-400 hover:text-slate-600">Admin Portal</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p>&copy; 2026 Droocry Inc. All rights reserved.</p>
+      <p class="text-slate-400">Fresh organic marketplace &bull; Certified Eco-Produce</p>
+    </div>
+  </footer>
+
+  <script>
+    let cartCount = 2;
+    let cartTotal = 10.50;
+
+    function toggleCart() {
+      const drawer = document.getElementById('cart-drawer');
+      drawer.classList.toggle('hidden');
+    }
+
+    function addToCart(name, price) {
+      cartCount++;
+      cartTotal += price;
+      document.getElementById('cart-badge').textContent = cartCount;
+      document.getElementById('cart-total').textContent = '$' + cartTotal.toFixed(2);
+      
+      const itemsList = document.getElementById('cart-items');
+      const itemEl = document.createElement('div');
+      itemEl.className = 'flex items-center justify-between p-3 bg-slate-50 rounded-xl';
+      itemEl.innerHTML = `
+        <div>
+          <p class="text-sm font-bold text-slate-900">${name}</p>
+          <p class="text-xs text-emerald-600 font-bold">$${price.toFixed(2)}</p>
+        </div>
+        <span class="text-xs font-bold text-slate-400">Qty: 1</span>
+      `;
+      itemsList.appendChild(itemEl);
+
+      const toast = document.createElement('div');
+      toast.className = 'fixed bottom-6 right-6 bg-slate-900 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-2xl z-50 transition';
+      toast.textContent = `Added ${name} to basket!`;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 2000);
+    }
+
+    function showOrderAlert() {
+      alert('Delivery available in your zone! Free delivery will be applied automatically.');
+    }
+
+    function checkoutMock() {
+      alert('Thank you for choosing Droocry! Checkout demo initialized.');
+    }
+  </script>
+</body>
+</html>
