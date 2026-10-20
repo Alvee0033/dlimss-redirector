@@ -1,132 +1,97 @@
-<div class="max-w-6xl mx-auto px-4 sm:px-6 py-6">
+<div class="max-w-5xl mx-auto px-4 py-8">
 
   <!-- Header -->
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
     <div>
-      <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900">Dashboard</h1>
-      <p class="text-slate-600 text-sm mt-1">
-        Overview of configured redirect sites and dynamic QR links.
+      <h1 class="text-2xl font-extrabold text-slate-900">Dashboard</h1>
+      <p class="text-slate-500 text-sm mt-0.5">
+        Overview of all active QR codes and destination sites.
       </p>
     </div>
 
-    <!-- Quick Add Button -->
-    <div class="flex items-center gap-2">
-      <button 
-        onclick="document.getElementById('new-site-modal').classList.remove('hidden')"
-        class="bg-blue-600 hover:bg-blue-700 text-white text-base font-bold px-5 py-3 rounded-xl transition shadow flex items-center gap-2"
-      >
-        <i class="fa-solid fa-plus text-sm"></i>
-        <span>Add Site</span>
-      </button>
-    </div>
+    <button 
+      onclick="document.getElementById('new-site-modal').classList.remove('hidden')"
+      class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold px-4 py-2.5 rounded-xl transition shadow-sm flex items-center gap-2 self-start sm:self-auto"
+    >
+      <i class="fa-solid fa-plus text-xs"></i>
+      <span>Add New Site</span>
+    </button>
   </div>
 
   <% if (typeof success !== 'undefined' && success) { %>
-    <div class="mb-5 p-4 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-800 text-base font-medium flex items-center gap-3">
-      <i class="fa-solid fa-circle-check text-emerald-600 text-lg flex-shrink-0"></i>
+    <div class="mb-5 p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-semibold flex items-center gap-2">
+      <i class="fa-solid fa-circle-check text-emerald-600"></i>
       <span><%= success %></span>
     </div>
   <% } %>
   <% if (typeof error !== 'undefined' && error) { %>
-    <div class="mb-5 p-4 rounded-xl bg-rose-50 border border-rose-300 text-rose-800 text-base font-medium flex items-center gap-3">
-      <i class="fa-solid fa-triangle-exclamation text-rose-600 text-lg flex-shrink-0"></i>
+    <div class="mb-5 p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-sm font-semibold flex items-center gap-2">
+      <i class="fa-solid fa-triangle-exclamation text-rose-600"></i>
       <span><%= error %></span>
     </div>
   <% } %>
 
-  <!-- Summary Cards -->
-  <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
-    <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
-      <span class="text-sm font-semibold text-slate-500">Total Sites</span>
-      <p class="text-3xl font-extrabold text-slate-900 mt-1"><%= sites.length %></p>
+  <!-- Summary Numbers -->
+  <div class="grid grid-cols-3 gap-3 sm:gap-4 mb-6">
+    <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+      <span class="text-xs font-bold text-slate-500">Total Sites</span>
+      <p class="text-2xl font-extrabold text-slate-900 mt-0.5"><%= sites.length %></p>
     </div>
-    <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
-      <span class="text-sm font-semibold text-slate-500">Active</span>
-      <p class="text-3xl font-extrabold text-emerald-600 mt-1"><%= sites.filter(s => s.is_active).length %></p>
+    <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+      <span class="text-xs font-bold text-slate-500">Active</span>
+      <p class="text-2xl font-extrabold text-emerald-600 mt-0.5"><%= sites.filter(s => s.is_active).length %></p>
     </div>
-    <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm col-span-2 sm:col-span-1">
-      <span class="text-sm font-semibold text-slate-500">Total Visits</span>
-      <p class="text-3xl font-extrabold text-blue-600 mt-1"><%= sites.reduce((acc, s) => acc + (s.total_clicks || 0), 0) %></p>
+    <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+      <span class="text-xs font-bold text-slate-500">Total Scans</span>
+      <p class="text-2xl font-extrabold text-blue-600 mt-0.5"><%= sites.reduce((acc, s) => acc + (s.total_clicks || 0), 0) %></p>
     </div>
   </div>
 
   <!-- Sites List -->
-  <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-    <div class="p-4 sm:p-5 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
-      <h2 class="text-lg font-bold text-slate-800">Configured Sites</h2>
-      <a href="/admin/rules" class="text-sm font-bold text-blue-600 hover:underline">Manage Site Rules &rarr;</a>
+  <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+    <div class="p-4 border-b border-slate-100 flex items-center justify-between">
+      <h2 class="text-sm font-bold text-slate-800">Your Websites (<%= sites.length %>)</h2>
+      <a href="/admin/rules" class="text-xs font-bold text-blue-600 hover:underline">Manage QR Links &rarr;</a>
     </div>
 
-    <div class="divide-y divide-slate-200">
+    <div class="divide-y divide-slate-100">
       <% sites.forEach(site => { %>
-        <div class="p-4 sm:p-5 hover:bg-slate-50 transition flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="p-4 hover:bg-slate-50 transition flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-sm">
           <div class="flex-1 min-w-0">
-            <div class="flex items-center gap-2 flex-wrap">
-              <span class="font-bold text-lg text-slate-900"><%= site.title %></span>
-              <span class="font-mono text-sm bg-blue-100 text-blue-800 px-2.5 py-0.5 rounded-lg font-bold">
-                /<%= site.key_name %>/:id
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-slate-900"><%= site.title %></span>
+              <span class="font-mono text-xs text-blue-700 bg-blue-50 px-2 py-0.5 rounded font-bold">
+                /<%= site.key_name %>
               </span>
               <% if (site.is_active) { %>
-                <span class="text-xs font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">Active</span>
+                <span class="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">On</span>
               <% } else { %>
-                <span class="text-xs font-bold bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full">Off</span>
+                <span class="text-[11px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">Off</span>
               <% } %>
             </div>
-            <div class="text-sm font-mono text-slate-600 mt-1 truncate" title="<%= site.base_url %>">
-              Target: <%= site.base_url %>
-            </div>
-            <div class="text-xs text-slate-500 mt-1">
-              Mode: <strong class="text-slate-700 uppercase"><%= site.append_mode %></strong> &bull; Total Clicks: <strong class="text-slate-800"><%= site.total_clicks %></strong>
+            <div class="text-xs text-slate-500 font-mono mt-1 truncate" title="<%= site.base_url %>">
+              <%= site.base_url %>
             </div>
           </div>
 
-          <!-- Buttons -->
-          <div class="flex items-center gap-2 flex-wrap">
+          <div class="flex items-center gap-2 self-start sm:self-auto">
             <a 
               href="<%= site.base_url %>" 
               target="_blank" 
-              class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-bold flex items-center gap-1.5 transition"
+              class="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-lg text-xs font-bold transition flex items-center gap-1.5"
             >
-              <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
-              <span>Open Site</span>
+              <span>Visit</span>
+              <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
             </a>
 
             <button 
               type="button" 
               onclick="showQR(<%= site.id %>, '<%= site.key_name %>', '<%= site.title %>')"
-              class="px-4 py-2 bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 rounded-xl text-sm font-bold flex items-center gap-1.5 transition"
+              class="px-3 py-1.5 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg text-xs font-bold transition flex items-center gap-1"
             >
               <i class="fa-solid fa-qrcode text-xs"></i>
               <span>QR</span>
             </button>
-
-            <a 
-              href="/<%= site.key_name %>/TEST-12345" 
-              target="_blank" 
-              class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-bold flex items-center gap-1 transition"
-            >
-              <i class="fa-solid fa-bolt text-amber-500 text-xs"></i>
-              <span>Test</span>
-            </a>
-
-            <button 
-              type="button" 
-              onclick='openEditSiteModal(<%= JSON.stringify(site) %>)'
-              class="p-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition"
-              title="Edit"
-            >
-              <i class="fa-solid fa-pen text-sm"></i>
-            </button>
-
-            <form method="POST" action="/admin/sites/<%= site.id %>/delete" onsubmit="return confirm('Delete this site?');" class="inline">
-              <button 
-                type="submit" 
-                class="p-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl transition"
-                title="Delete"
-              >
-                <i class="fa-solid fa-trash text-sm"></i>
-              </button>
-            </form>
           </div>
         </div>
       <% }) %>
@@ -136,182 +101,91 @@
 </div>
 
 <!-- Modal: New Site -->
-<div id="new-site-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-  <div class="bg-white border border-slate-200 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+<div id="new-site-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
+  <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl relative max-h-[90vh] overflow-y-auto">
     <button 
       onclick="document.getElementById('new-site-modal').classList.add('hidden')"
       class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 p-2"
     >
-      <i class="fa-solid fa-xmark text-xl"></i>
+      <i class="fa-solid fa-xmark text-lg"></i>
     </button>
 
-    <h2 class="text-xl font-extrabold text-slate-900 mb-1">Add Site</h2>
-    <p class="text-sm text-slate-500 mb-4">Set up a new verification redirect target.</p>
+    <h2 class="text-lg font-bold text-slate-900 mb-1">Add Website</h2>
+    <p class="text-xs text-slate-500 mb-4">Set up a new QR redirect link.</p>
 
     <form method="POST" action="/admin/sites">
-      <div class="space-y-4">
+      <div class="space-y-3.5">
         <div>
-          <label class="block text-sm font-bold text-slate-700 mb-1">Site Name *</label>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Name</label>
           <input 
             type="text" 
             name="title" 
             required
-            placeholder="e.g. Pakistan DLIMS or India Parivahan"
-            class="w-full rounded-xl px-4 py-3 text-base text-slate-900"
+            placeholder="e.g. Pakistan DLIMS"
+            class="w-full rounded-xl px-3 py-2 text-sm text-slate-900"
           >
         </div>
 
         <div>
-          <label class="block text-sm font-bold text-slate-700 mb-1">URL Slug / Key *</label>
+          <label class="block text-xs font-bold text-slate-700 mb-1">QR Link Keyword</label>
           <div class="flex items-center">
-            <span class="bg-slate-100 border border-r-0 border-slate-300 rounded-l-xl px-3.5 py-3 text-base text-slate-500 font-mono">/</span>
+            <span class="bg-slate-100 border border-r-0 border-slate-300 rounded-l-xl px-3 py-2 text-sm text-slate-500 font-mono">dlimss.com/</span>
             <input 
               type="text" 
               name="key_name" 
               required
-              placeholder="e.g. pakistan, india, dari" 
-              class="w-full rounded-r-xl px-4 py-3 text-base text-slate-900 font-mono"
+              placeholder="pakistan" 
+              class="w-full rounded-r-xl px-3 py-2 text-sm text-slate-900 font-mono"
             >
           </div>
         </div>
 
         <div>
-          <label class="block text-sm font-bold text-slate-700 mb-1">Target Base URL *</label>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Destination Web Address</label>
           <input 
             type="url" 
             name="base_url" 
             required 
             placeholder="https://verify.example.com"
-            class="w-full rounded-xl px-4 py-3 text-base text-slate-900 font-mono"
+            class="w-full rounded-xl px-3 py-2 text-sm text-slate-900 font-mono"
           >
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-sm font-bold text-slate-700 mb-1">Append Mode</label>
-            <select name="append_mode" id="append_mode_select" onchange="toggleParamField(this.value, 'query_param_div')" class="w-full rounded-xl px-3.5 py-3 text-base text-slate-900">
-              <option value="query">Query (?param=ID)</option>
-              <option value="path">Path (/base/url/ID)</option>
+            <label class="block text-xs font-bold text-slate-700 mb-1">How ID is added</label>
+            <select name="append_mode" id="append_mode_select" onchange="toggleParamField(this.value, 'query_param_div')" class="w-full rounded-xl px-2.5 py-2 text-xs text-slate-900">
+              <option value="query">Parameter (?id=)</option>
+              <option value="path">Slash (/id)</option>
             </select>
           </div>
 
           <div id="query_param_div">
-            <label class="block text-sm font-bold text-slate-700 mb-1">Parameter Name</label>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Parameter Name</label>
             <input 
               type="text" 
               name="query_param_name" 
               value="id"
-              placeholder="e.g. id, lic, permitNumber"
-              class="w-full rounded-xl px-4 py-3 text-base text-slate-900 font-mono"
+              placeholder="id"
+              class="w-full rounded-xl px-3 py-2 text-xs text-slate-900 font-mono"
             >
           </div>
         </div>
       </div>
 
-      <div class="mt-6 flex justify-end gap-3">
+      <div class="mt-5 flex justify-end gap-2">
         <button 
           type="button" 
           onclick="document.getElementById('new-site-modal').classList.add('hidden')"
-          class="px-5 py-2.5 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 transition"
+          class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100"
         >
           Cancel
         </button>
         <button 
           type="submit" 
-          class="px-6 py-2.5 rounded-xl text-sm font-bold bg-blue-600 hover:bg-blue-700 text-white transition shadow"
+          class="px-5 py-2 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white transition shadow-sm"
         >
-          Save Site
-        </button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<!-- Modal: Edit Site -->
-<div id="edit-site-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-  <div class="bg-white border border-slate-200 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-    <button 
-      onclick="document.getElementById('edit-site-modal').classList.add('hidden')"
-      class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 p-2"
-    >
-      <i class="fa-solid fa-xmark text-xl"></i>
-    </button>
-
-    <h2 class="text-xl font-extrabold text-slate-900 mb-1">Edit Site</h2>
-    <p class="text-sm text-slate-500 mb-4">Update target URL or redirect parameter.</p>
-
-    <form id="edit-site-form" method="POST" action="">
-      <div class="space-y-4">
-        <div>
-          <label class="block text-sm font-bold text-slate-700 mb-1">Site Name</label>
-          <input 
-            type="text" 
-            id="edit-site-title" 
-            name="title" 
-            required
-            class="w-full rounded-xl px-4 py-3 text-base text-slate-900"
-          >
-        </div>
-
-        <div>
-          <label class="block text-sm font-bold text-slate-700 mb-1">URL Slug / Key</label>
-          <div class="flex items-center">
-            <span class="bg-slate-100 border border-r-0 border-slate-300 rounded-l-xl px-3.5 py-3 text-base text-slate-500 font-mono">/</span>
-            <input 
-              type="text" 
-              id="edit-site-key" 
-              name="key_name" 
-              required
-              class="w-full rounded-r-xl px-4 py-3 text-base text-slate-900 font-mono"
-            >
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-sm font-bold text-slate-700 mb-1">Target Base URL</label>
-          <input 
-            type="url" 
-            id="edit-site-base" 
-            name="base_url" 
-            required 
-            class="w-full rounded-xl px-4 py-3 text-base text-slate-900 font-mono"
-          >
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-bold text-slate-700 mb-1">Append Mode</label>
-            <select name="append_mode" id="edit-site-mode" onchange="toggleParamField(this.value, 'edit_query_param_div')" class="w-full rounded-xl px-3.5 py-3 text-base text-slate-900">
-              <option value="query">Query (?param=ID)</option>
-              <option value="path">Path (/base/url/ID)</option>
-            </select>
-          </div>
-
-          <div id="edit_query_param_div">
-            <label class="block text-sm font-bold text-slate-700 mb-1">Parameter Name</label>
-            <input 
-              type="text" 
-              id="edit-site-param" 
-              name="query_param_name" 
-              class="w-full rounded-xl px-4 py-3 text-base text-slate-900 font-mono"
-            >
-          </div>
-        </div>
-      </div>
-
-      <div class="mt-6 flex justify-end gap-3">
-        <button 
-          type="button" 
-          onclick="document.getElementById('edit-site-modal').classList.add('hidden')"
-          class="px-5 py-2.5 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 transition"
-        >
-          Cancel
-        </button>
-        <button 
-          type="submit" 
-          class="px-6 py-2.5 rounded-xl text-sm font-bold bg-blue-600 hover:bg-blue-700 text-white transition shadow"
-        >
-          Update Site
+          Save
         </button>
       </div>
     </form>
@@ -319,21 +193,21 @@
 </div>
 
 <!-- QR Modal -->
-<div id="qr-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-  <div class="bg-white border border-slate-200 rounded-2xl max-w-sm w-full p-6 shadow-2xl relative text-center">
+<div id="qr-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
+  <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-xl relative text-center">
     <button 
       onclick="document.getElementById('qr-modal').classList.add('hidden')"
       class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 p-2"
     >
-      <i class="fa-solid fa-xmark text-xl"></i>
+      <i class="fa-solid fa-xmark text-lg"></i>
     </button>
 
-    <h2 class="text-xl font-bold text-slate-900 mb-1" id="qr-label">QR Code</h2>
+    <h2 class="text-base font-bold text-slate-900 mb-1" id="qr-label">QR Code</h2>
     <p class="text-xs text-slate-500 mb-4 font-mono break-all" id="qr-url-label"></p>
 
     <div class="flex justify-center mb-4">
       <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 inline-block">
-        <img id="qr-image" src="" alt="QR Code" class="w-56 h-56 block mx-auto">
+        <img id="qr-image" src="" alt="QR Code" class="w-48 h-48 block mx-auto">
       </div>
     </div>
 
@@ -341,10 +215,10 @@
       id="qr-download-btn"
       href="#"
       download="qr.png"
-      class="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-base font-bold bg-blue-600 hover:bg-blue-700 text-white transition shadow"
+      class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold bg-blue-600 hover:bg-blue-700 text-white transition shadow-sm"
     >
-      <i class="fa-solid fa-download text-sm"></i>
-      Download QR
+      <i class="fa-solid fa-download text-xs"></i>
+      Download Image
     </a>
   </div>
 </div>
@@ -357,17 +231,6 @@
     }
   }
 
-  function openEditSiteModal(site) {
-    document.getElementById('edit-site-form').action = '/admin/sites/' + site.id + '/edit';
-    document.getElementById('edit-site-title').value = site.title;
-    document.getElementById('edit-site-key').value = site.key_name;
-    document.getElementById('edit-site-base').value = site.base_url;
-    document.getElementById('edit-site-mode').value = site.append_mode;
-    document.getElementById('edit-site-param').value = site.query_param_name || 'id';
-    toggleParamField(site.append_mode, 'edit_query_param_div');
-    document.getElementById('edit-site-modal').classList.remove('hidden');
-  }
-
   async function showQR(siteId, keyName, title) {
     const modal = document.getElementById('qr-modal');
     const img = document.getElementById('qr-image');
@@ -377,7 +240,7 @@
 
     img.src = '';
     label.textContent = title;
-    urlLabel.textContent = 'Generating...';
+    urlLabel.textContent = 'Loading...';
     modal.classList.remove('hidden');
 
     try {
@@ -388,7 +251,7 @@
       dlBtn.href = data.qr;
       dlBtn.download = `qr-${keyName}.png`;
     } catch(e) {
-      urlLabel.textContent = 'Error generating QR';
+      urlLabel.textContent = 'Error';
     }
   }
 </script>

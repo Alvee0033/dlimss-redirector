@@ -1,218 +1,221 @@
-<div class="max-w-6xl mx-auto px-4 sm:px-6 py-6">
+<div class="max-w-5xl mx-auto px-4 py-8">
 
   <!-- Header -->
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
     <div>
-      <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900">Site Rules</h1>
-      <p class="text-slate-600 text-sm mt-1">
-        Configure how QR scans and incoming URLs redirect to target websites.
+      <h1 class="text-2xl font-extrabold text-slate-900">QR Redirect Links</h1>
+      <p class="text-slate-500 text-sm mt-0.5">
+        When someone scans these QR codes, this is where they land.
       </p>
     </div>
 
     <button 
       onclick="document.getElementById('new-rule-modal').classList.remove('hidden')"
-      class="bg-blue-600 hover:bg-blue-700 text-white text-base font-bold px-5 py-3 rounded-xl transition shadow flex items-center gap-2 self-start sm:self-auto"
+      class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-2 self-start sm:self-auto shadow-sm"
     >
-      <i class="fa-solid fa-plus text-sm"></i>
-      <span>Add Rule</span>
+      <i class="fa-solid fa-plus text-xs"></i>
+      <span>Add New Link</span>
     </button>
   </div>
 
   <% if (typeof success !== 'undefined' && success) { %>
-    <div class="mb-5 p-4 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-800 text-base font-medium flex items-center gap-3">
-      <i class="fa-solid fa-circle-check text-emerald-600 text-lg flex-shrink-0"></i>
+    <div class="mb-5 p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-semibold flex items-center gap-2">
+      <i class="fa-solid fa-circle-check text-emerald-600"></i>
       <span><%= success %></span>
     </div>
   <% } %>
   <% if (typeof error !== 'undefined' && error) { %>
-    <div class="mb-5 p-4 rounded-xl bg-rose-50 border border-rose-300 text-rose-800 text-base font-medium flex items-center gap-3">
-      <i class="fa-solid fa-triangle-exclamation text-rose-600 text-lg flex-shrink-0"></i>
+    <div class="mb-5 p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-sm font-semibold flex items-center gap-2">
+      <i class="fa-solid fa-triangle-exclamation text-rose-600"></i>
       <span><%= error %></span>
     </div>
   <% } %>
 
   <!-- Search Filter -->
-  <div class="mb-6 relative">
-    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
-      <i class="fa-solid fa-magnifying-glass"></i>
+  <div class="mb-5 relative">
+    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+      <i class="fa-solid fa-magnifying-glass text-sm"></i>
     </div>
     <input 
       type="text" 
       id="rule-search" 
       oninput="filterRules()" 
-      placeholder="Search rules by name, slug or destination URL..." 
-      class="w-full rounded-xl pl-11 pr-4 py-3.5 text-base text-slate-900 shadow-sm"
+      placeholder="Search by country or website name..." 
+      class="w-full rounded-xl pl-10 pr-4 py-2.5 text-sm text-slate-900 shadow-sm"
     >
   </div>
 
-  <!-- Rules Table -->
-  <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-    <div class="p-4 sm:p-5 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
-      <h2 class="text-base font-bold text-slate-800">All Forwarding Rules (<%= sites.length %>)</h2>
-      <span class="text-xs font-semibold text-slate-500">Auto redirects on incoming QR scans</span>
-    </div>
-
-    <div class="divide-y divide-slate-200">
-      <% sites.forEach(site => { %>
-        <div class="rule-item p-4 sm:p-5 hover:bg-slate-50 transition flex flex-col sm:flex-row sm:items-center justify-between gap-4" data-search="<%= site.title %> <%= site.key_name %> <%= site.base_url %>">
-          
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center gap-2 flex-wrap">
-              <span class="font-bold text-lg text-slate-900"><%= site.title %></span>
-              <span class="font-mono text-sm bg-blue-100 text-blue-800 px-2.5 py-0.5 rounded-lg font-bold">
-                /<%= site.key_name %>/:id
-              </span>
-              <span class="text-xs font-bold uppercase px-2 py-0.5 rounded bg-slate-100 text-slate-700">
-                Mode: <%= site.append_mode %>
-              </span>
-            </div>
-
-            <div class="text-sm font-mono text-slate-600 mt-1 truncate" title="<%= site.base_url %>">
-              Target: <%= site.base_url %>
-            </div>
-
-            <div class="text-xs text-slate-500 mt-1 flex items-center gap-2">
-              <span>Redirect rule: <code class="text-blue-700 font-bold bg-slate-100 px-1 py-0.5 rounded"><%= site.append_mode === 'query' ? `?${site.query_param_name}=ID` : `/${site.key_name}/ID` %></code></span>
-              <span>&bull;</span>
-              <span>Visits: <strong><%= site.total_clicks %></strong></span>
-            </div>
+  <!-- Clear Plain English List -->
+  <div class="space-y-3">
+    <% sites.forEach(site => { %>
+      <div class="rule-item bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-sm hover:border-slate-300 transition" data-search="<%= site.title %> <%= site.key_name %> <%= site.base_url %>">
+        
+        <!-- Header row -->
+        <div class="flex items-center justify-between gap-3 mb-3">
+          <div class="flex items-center gap-2">
+            <h2 class="font-extrabold text-base sm:text-lg text-slate-900"><%= site.title %></h2>
+            <% if (site.is_active) { %>
+              <span class="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">On</span>
+            <% } else { %>
+              <span class="text-xs font-bold text-slate-500 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full">Off</span>
+            <% } %>
           </div>
 
-          <!-- Actions -->
-          <div class="flex items-center gap-2 flex-wrap">
+          <!-- Total Scans -->
+          <span class="text-xs font-bold text-slate-500 bg-slate-50 border border-slate-200 px-2.5 py-1 rounded-lg">
+            Scanned <%= site.total_clicks %> times
+          </span>
+        </div>
+
+        <!-- Plain English Explanation Box -->
+        <div class="bg-slate-50 rounded-xl p-3 border border-slate-100 text-xs sm:text-sm space-y-1.5 font-sans mb-4">
+          <div class="flex items-center gap-2">
+            <span class="font-bold text-slate-500 w-28 sm:w-32 flex-shrink-0">Scanned QR URL:</span>
+            <span class="font-mono text-blue-700 font-bold break-all">dlimss.com/<%= site.key_name %>/(ID)</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="font-bold text-slate-500 w-28 sm:w-32 flex-shrink-0">Sends visitor to:</span>
+            <span class="font-mono text-slate-700 truncate" title="<%= site.base_url %>"><%= site.base_url %></span>
+          </div>
+        </div>
+
+        <!-- Action Row -->
+        <div class="flex items-center justify-between gap-2 pt-1 border-t border-slate-100 flex-wrap">
+          <div class="flex items-center gap-2">
             <a 
-              href="/<%= site.key_name %>/TEST-12345" 
+              href="/<%= site.key_name %>/SAMPLE-12345" 
               target="_blank" 
-              class="px-4 py-2 bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100 rounded-xl text-sm font-bold flex items-center gap-1.5 transition"
-              title="Test redirect rule"
+              class="px-3.5 py-1.5 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg text-xs font-bold transition flex items-center gap-1.5"
             >
-              <i class="fa-solid fa-bolt text-xs"></i>
-              <span>Test Rule</span>
+              <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+              <span>Test Link</span>
             </a>
 
             <!-- Toggle On/Off -->
             <form method="POST" action="/admin/sites/<%= site.id %>/toggle" class="inline">
               <button 
                 type="submit" 
-                class="px-3.5 py-2 border rounded-xl text-sm font-bold transition <%= site.is_active ? 'bg-emerald-50 text-emerald-700 border-emerald-300 hover:bg-emerald-100' : 'bg-slate-100 text-slate-600 border-slate-300 hover:bg-slate-200' %>"
+                class="px-3 py-1.5 border rounded-lg text-xs font-bold transition <%= site.is_active ? 'border-slate-200 text-slate-600 hover:bg-slate-100' : 'border-emerald-300 text-emerald-700 bg-emerald-50' %>"
               >
-                <%= site.is_active ? 'Active' : 'Disabled' %>
-              </button>
-            </form>
-
-            <button 
-              type="button" 
-              onclick='openEditRuleModal(<%= JSON.stringify(site) %>)'
-              class="p-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition"
-              title="Edit Rule"
-            >
-              <i class="fa-solid fa-pen text-sm"></i>
-            </button>
-
-            <form method="POST" action="/admin/sites/<%= site.id %>/delete" onsubmit="return confirm('Delete this rule?');" class="inline">
-              <button 
-                type="submit" 
-                class="p-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl transition"
-                title="Delete Rule"
-              >
-                <i class="fa-solid fa-trash text-sm"></i>
+                <%= site.is_active ? 'Turn Off' : 'Turn On' %>
               </button>
             </form>
           </div>
 
+          <div class="flex items-center gap-1">
+            <button 
+              type="button" 
+              onclick='openEditRuleModal(<%= JSON.stringify(site) %>)'
+              class="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition"
+              title="Edit"
+            >
+              <i class="fa-solid fa-pen text-xs"></i>
+            </button>
+
+            <form method="POST" action="/admin/sites/<%= site.id %>/delete" onsubmit="return confirm('Delete this link?');" class="inline">
+              <button 
+                type="submit" 
+                class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition"
+                title="Delete"
+              >
+                <i class="fa-solid fa-trash text-xs"></i>
+              </button>
+            </form>
+          </div>
         </div>
-      <% }) %>
-    </div>
+
+      </div>
+    <% }) %>
   </div>
 
 </div>
 
 <!-- Modal: New Rule -->
-<div id="new-rule-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-  <div class="bg-white border border-slate-200 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+<div id="new-rule-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
+  <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl relative max-h-[90vh] overflow-y-auto">
     <button 
       onclick="document.getElementById('new-rule-modal').classList.add('hidden')"
       class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 p-2"
     >
-      <i class="fa-solid fa-xmark text-xl"></i>
+      <i class="fa-solid fa-xmark text-lg"></i>
     </button>
 
-    <h2 class="text-xl font-extrabold text-slate-900 mb-1">Add Site Rule</h2>
-    <p class="text-sm text-slate-500 mb-4">Set up incoming QR slug and target URL redirect rule.</p>
+    <h2 class="text-lg font-bold text-slate-900 mb-1">Add QR Link</h2>
+    <p class="text-xs text-slate-500 mb-4">Set where the QR code sends people.</p>
 
     <form method="POST" action="/admin/sites">
-      <div class="space-y-4">
+      <div class="space-y-3.5">
         <div>
-          <label class="block text-sm font-bold text-slate-700 mb-1">Rule Name *</label>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Website or Country Name</label>
           <input 
             type="text" 
             name="title" 
             required
-            placeholder="e.g. Pakistan Verification or Dubai License"
-            class="w-full rounded-xl px-4 py-3 text-base text-slate-900"
+            placeholder="e.g. Pakistan License or Dubai RTA"
+            class="w-full rounded-xl px-3 py-2 text-sm text-slate-900"
           >
         </div>
 
         <div>
-          <label class="block text-sm font-bold text-slate-700 mb-1">Incoming Key (Slug) *</label>
+          <label class="block text-xs font-bold text-slate-700 mb-1">QR Short Word</label>
           <div class="flex items-center">
-            <span class="bg-slate-100 border border-r-0 border-slate-300 rounded-l-xl px-3.5 py-3 text-base text-slate-500 font-mono">/</span>
+            <span class="bg-slate-100 border border-r-0 border-slate-300 rounded-l-xl px-3 py-2 text-sm text-slate-500 font-mono">dlimss.com/</span>
             <input 
               type="text" 
               name="key_name" 
               required
-              placeholder="e.g. pk, dlims, verify" 
-              class="w-full rounded-r-xl px-4 py-3 text-base text-slate-900 font-mono"
+              placeholder="pakistan" 
+              class="w-full rounded-r-xl px-3 py-2 text-sm text-slate-900 font-mono"
             >
           </div>
         </div>
 
         <div>
-          <label class="block text-sm font-bold text-slate-700 mb-1">Target Base URL *</label>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Destination Web Address</label>
           <input 
             type="url" 
             name="base_url" 
             required 
-            placeholder="https://destination.example.com"
-            class="w-full rounded-xl px-4 py-3 text-base text-slate-900 font-mono"
+            placeholder="https://destination-website.com/verify"
+            class="w-full rounded-xl px-3 py-2 text-sm text-slate-900 font-mono"
           >
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-sm font-bold text-slate-700 mb-1">Append Mode</label>
-            <select name="append_mode" id="rule_append_mode" onchange="toggleRuleParamField(this.value, 'rule_query_param_div')" class="w-full rounded-xl px-3.5 py-3 text-base text-slate-900">
-              <option value="query">Query (?param=ID)</option>
-              <option value="path">Path (/base/url/ID)</option>
+            <label class="block text-xs font-bold text-slate-700 mb-1">How ID is added</label>
+            <select name="append_mode" id="rule_append_mode" onchange="toggleRuleParamField(this.value, 'rule_query_param_div')" class="w-full rounded-xl px-2.5 py-2 text-xs text-slate-900">
+              <option value="query">As parameter (?id=123)</option>
+              <option value="path">As slash (/123)</option>
             </select>
           </div>
 
           <div id="rule_query_param_div">
-            <label class="block text-sm font-bold text-slate-700 mb-1">Parameter Key</label>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Parameter Name</label>
             <input 
               type="text" 
               name="query_param_name" 
               value="id"
-              placeholder="e.g. id, lic, permitNumber"
-              class="w-full rounded-xl px-4 py-3 text-base text-slate-900 font-mono"
+              placeholder="e.g. id, lic"
+              class="w-full rounded-xl px-3 py-2 text-xs text-slate-900 font-mono"
             >
           </div>
         </div>
       </div>
 
-      <div class="mt-6 flex justify-end gap-3">
+      <div class="mt-5 flex justify-end gap-2">
         <button 
           type="button" 
           onclick="document.getElementById('new-rule-modal').classList.add('hidden')"
-          class="px-5 py-2.5 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 transition"
+          class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100"
         >
           Cancel
         </button>
         <button 
           type="submit" 
-          class="px-6 py-2.5 rounded-xl text-sm font-bold bg-blue-600 hover:bg-blue-700 text-white transition shadow"
+          class="px-5 py-2 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white transition shadow-sm"
         >
-          Save Rule
+          Save Link
         </button>
       </div>
     </form>
@@ -220,90 +223,90 @@
 </div>
 
 <!-- Modal: Edit Rule -->
-<div id="edit-rule-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-  <div class="bg-white border border-slate-200 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+<div id="edit-rule-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
+  <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl relative max-h-[90vh] overflow-y-auto">
     <button 
       onclick="document.getElementById('edit-rule-modal').classList.add('hidden')"
       class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 p-2"
     >
-      <i class="fa-solid fa-xmark text-xl"></i>
+      <i class="fa-solid fa-xmark text-lg"></i>
     </button>
 
-    <h2 class="text-xl font-extrabold text-slate-900 mb-1">Edit Rule</h2>
-    <p class="text-sm text-slate-500 mb-4">Modify destination target and URL redirect parameter.</p>
+    <h2 class="text-lg font-bold text-slate-900 mb-1">Edit QR Link</h2>
+    <p class="text-xs text-slate-500 mb-4">Change where this QR code directs visitors.</p>
 
     <form id="edit-rule-form" method="POST" action="">
-      <div class="space-y-4">
+      <div class="space-y-3.5">
         <div>
-          <label class="block text-sm font-bold text-slate-700 mb-1">Rule Name</label>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Name</label>
           <input 
             type="text" 
             id="edit-rule-title" 
             name="title" 
             required
-            class="w-full rounded-xl px-4 py-3 text-base text-slate-900"
+            class="w-full rounded-xl px-3 py-2 text-sm text-slate-900"
           >
         </div>
 
         <div>
-          <label class="block text-sm font-bold text-slate-700 mb-1">Incoming Key (Slug)</label>
+          <label class="block text-xs font-bold text-slate-700 mb-1">QR Short Word</label>
           <div class="flex items-center">
-            <span class="bg-slate-100 border border-r-0 border-slate-300 rounded-l-xl px-3.5 py-3 text-base text-slate-500 font-mono">/</span>
+            <span class="bg-slate-100 border border-r-0 border-slate-300 rounded-l-xl px-3 py-2 text-sm text-slate-500 font-mono">dlimss.com/</span>
             <input 
               type="text" 
               id="edit-rule-key" 
               name="key_name" 
               required
-              class="w-full rounded-r-xl px-4 py-3 text-base text-slate-900 font-mono"
+              class="w-full rounded-r-xl px-3 py-2 text-sm text-slate-900 font-mono"
             >
           </div>
         </div>
 
         <div>
-          <label class="block text-sm font-bold text-slate-700 mb-1">Target Base URL</label>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Destination Web Address</label>
           <input 
             type="url" 
             id="edit-rule-base" 
             name="base_url" 
             required 
-            class="w-full rounded-xl px-4 py-3 text-base text-slate-900 font-mono"
+            class="w-full rounded-xl px-3 py-2 text-sm text-slate-900 font-mono"
           >
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-sm font-bold text-slate-700 mb-1">Append Mode</label>
-            <select name="append_mode" id="edit-rule-mode" onchange="toggleRuleParamField(this.value, 'edit_rule_query_param_div')" class="w-full rounded-xl px-3.5 py-3 text-base text-slate-900">
-              <option value="query">Query (?param=ID)</option>
-              <option value="path">Path (/base/url/ID)</option>
+            <label class="block text-xs font-bold text-slate-700 mb-1">How ID is added</label>
+            <select name="append_mode" id="edit-rule-mode" onchange="toggleRuleParamField(this.value, 'edit_rule_query_param_div')" class="w-full rounded-xl px-2.5 py-2 text-xs text-slate-900">
+              <option value="query">As parameter (?id=123)</option>
+              <option value="path">As slash (/123)</option>
             </select>
           </div>
 
           <div id="edit_rule_query_param_div">
-            <label class="block text-sm font-bold text-slate-700 mb-1">Parameter Key</label>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Parameter Name</label>
             <input 
               type="text" 
               id="edit-rule-param" 
               name="query_param_name" 
-              class="w-full rounded-xl px-4 py-3 text-base text-slate-900 font-mono"
+              class="w-full rounded-xl px-3 py-2 text-xs text-slate-900 font-mono"
             >
           </div>
         </div>
       </div>
 
-      <div class="mt-6 flex justify-end gap-3">
+      <div class="mt-5 flex justify-end gap-2">
         <button 
           type="button" 
           onclick="document.getElementById('edit-rule-modal').classList.add('hidden')"
-          class="px-5 py-2.5 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 transition"
+          class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100"
         >
           Cancel
         </button>
         <button 
           type="submit" 
-          class="px-6 py-2.5 rounded-xl text-sm font-bold bg-blue-600 hover:bg-blue-700 text-white transition shadow"
+          class="px-5 py-2 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white transition shadow-sm"
         >
-          Update Rule
+          Update Link
         </button>
       </div>
     </form>
