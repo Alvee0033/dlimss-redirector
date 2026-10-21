@@ -68,10 +68,10 @@ if (count === 0) {
 
   insertSite.run(
     'dari', 
-    'DARI Verification Portal', 
-    'https://dari.ae/app/verify-document', 
+    'DARI Document Verification (Abu Dhabi)', 
+    'https://dari-ace.com/en/app/verify-document', 
     'query', 
-    'permitNumber'
+    'search'
   );
 
   insertSite.run(
