@@ -1,33 +1,39 @@
-<div class="max-w-6xl mx-auto px-4 py-8">
+<div class="max-w-6xl mx-auto px-3.5 sm:px-6 py-4 sm:py-8">
 
-  <!-- Header -->
-  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-    <div>
-      <h1 class="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2.5">
-        <span class="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center text-sm shadow-sm">
-          <i class="fa-solid fa-layer-group"></i>
+  <!-- Clean Mobile & Desktop Header Banner -->
+  <div class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white rounded-3xl p-5 sm:p-7 mb-5 sm:mb-7 shadow-lg border border-slate-800 relative overflow-hidden">
+    <div class="absolute -right-10 -bottom-10 w-44 h-44 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute left-1/3 -top-10 w-40 h-40 bg-indigo-500/15 rounded-full blur-2xl pointer-events-none"></div>
+
+    <div class="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div>
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-300 text-[11px] font-bold mb-2">
+          <i class="fa-solid fa-shield-halved text-xs"></i>
+          <span>Official Verification Hub</span>
+        </div>
+        <h1 class="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2.5">
+          <span>Destination Portals & System Hub</span>
+        </h1>
+        <p class="text-slate-300 text-xs sm:text-sm mt-1 max-w-xl leading-relaxed">
+          One-tap launchpad with official agency logos, direct administrator logins, and copyable credentials.
+        </p>
+      </div>
+
+      <div class="flex items-center gap-2 self-start sm:self-center flex-wrap">
+        <span class="text-xs font-bold px-3 py-1.5 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 shadow-xs flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span><%= sites.filter(s => s.is_active).length %> Online</span>
         </span>
-        <span>Destination Portals & System Hub</span>
-      </h1>
-      <p class="text-slate-500 text-xs sm:text-sm mt-1">
-        Direct launchpad with verified credentials, one-click copy, and official agency logos.
-      </p>
-    </div>
-
-    <div class="flex items-center gap-2">
-      <span class="text-xs font-bold px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200/80 shadow-xs flex items-center gap-1.5">
-        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-        <span><%= sites.filter(s => s.is_active).length %> Online</span>
-      </span>
-      <span class="text-xs font-bold px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 border border-slate-200/80 shadow-xs flex items-center gap-1.5">
-        <i class="fa-solid fa-bolt text-amber-500 text-[11px]"></i>
-        <span><%= sites.reduce((acc, s) => acc + (s.total_clicks || 0), 0) %> Scans</span>
-      </span>
+        <span class="text-xs font-bold px-3 py-1.5 rounded-xl bg-white/10 text-slate-200 border border-white/15 shadow-xs flex items-center gap-1.5">
+          <i class="fa-solid fa-bolt text-amber-400 text-xs"></i>
+          <span><%= sites.reduce((acc, s) => acc + (s.total_clicks || 0), 0) %> Scans</span>
+        </span>
+      </div>
     </div>
   </div>
 
   <!-- Search Filter -->
-  <div class="mb-6 relative">
+  <div class="mb-5 sm:mb-6 relative">
     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
       <i class="fa-solid fa-magnifying-glass text-sm"></i>
     </div>
@@ -40,8 +46,8 @@
     >
   </div>
 
-  <!-- Portals Grid -->
-  <div id="portals-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+  <!-- Cards Grid (Mobile responsive: 1 col on mobile, 2 col on tablet, 3 col on large desktop) -->
+  <div id="portals-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
     <% 
       const getMeta = (key) => {
         key = (key || '').toLowerCase();
@@ -49,95 +55,103 @@
           return {
             logo: '/logos/dari.svg',
             type: 'image',
-            bg: 'bg-emerald-50',
-            border: 'border-emerald-100',
+            bannerBg: 'from-emerald-600 to-teal-700',
+            badgeBg: 'bg-emerald-50 text-emerald-800 border-emerald-200',
             adminUrl: 'https://dari-ace.com/admin',
             user: 'officer@adrec.gov.ae',
             pass: 'admin123',
-            badge: 'UAE ADREC'
+            badge: 'Abu Dhabi ADREC',
+            desc: 'DARI Real Estate Contract & Document Verification'
           };
         }
         if (key.includes('bd')) {
           return {
             logo: '/logos/bd.png',
             type: 'image',
-            bg: 'bg-green-50',
-            border: 'border-green-100',
+            bannerBg: 'from-emerald-700 to-green-800',
+            badgeBg: 'bg-green-50 text-green-800 border-green-200',
             adminUrl: 'http://ewqqphsfrvznx2wabg1dgoej.163.227.239.97.sslip.io/login',
             user: 'admin@brta.gov.bd',
             pass: 'admin123',
-            badge: 'Bangladesh BRTA'
+            badge: 'Bangladesh BRTA',
+            desc: 'BRTA Smart Driving Licence Card Portal'
           };
         }
         if (key.includes('pk')) {
           return {
             logo: '/logos/pk.png',
             type: 'image',
-            bg: 'bg-teal-50',
-            border: 'border-teal-100',
+            bannerBg: 'from-teal-700 to-cyan-900',
+            badgeBg: 'bg-teal-50 text-teal-800 border-teal-200',
             adminUrl: 'https://kpk.dlimsvr.com/admin',
             user: 'admin',
             pass: 'admin',
-            badge: 'KPK Police'
+            badge: 'KPK Police DLIMS',
+            desc: 'Khyber Pakhtunkhwa Driving Licence Verification'
           };
         }
         if (key.includes('pakistan')) {
           return {
             logo: '/logos/pakistan.png',
             type: 'image',
-            bg: 'bg-emerald-50',
-            border: 'border-emerald-100',
+            bannerBg: 'from-emerald-800 to-teal-900',
+            badgeBg: 'bg-emerald-50 text-emerald-800 border-emerald-200',
             adminUrl: 'https://pakistan.dlimsvr.com/admin',
             user: 'admin@dlims.gov',
             pass: 'dlims@admin2024',
-            badge: 'Islamabad Police'
+            badge: 'Islamabad Police',
+            desc: 'Islamabad Capital Territory DLIMS System'
           };
         }
         if (key.includes('india')) {
           return {
             logo: '/logos/india.png',
             type: 'image',
-            bg: 'bg-orange-50',
-            border: 'border-orange-100',
+            bannerBg: 'from-amber-600 to-orange-700',
+            badgeBg: 'bg-orange-50 text-orange-800 border-orange-200',
             adminUrl: 'https://sarathiparivahn.com/something',
             user: 'admin@dlims.gov',
             pass: 'dlims@admin2024',
-            badge: 'India Parivahan'
+            badge: 'Sarathi Parivahan',
+            desc: 'Ministry of Road Transport & Highways DL Portal'
           };
         }
         if (key.includes('afghan')) {
           return {
             logo: '/logos/afghan.webp',
             type: 'image',
-            bg: 'bg-red-50',
-            border: 'border-red-100',
+            bannerBg: 'from-rose-800 to-red-950',
+            badgeBg: 'bg-red-50 text-red-800 border-red-200',
             adminUrl: 'https://afghansdlims.com/login',
             user: 'admin',
             pass: 'admin123',
-            badge: 'Afghanistan Traffic'
+            badge: 'Afghanistan Traffic',
+            desc: 'Traffic Police Directorate Driving License Verification'
           };
         }
         if (key.includes('card')) {
           return {
             logo: '/logos/card.svg',
             type: 'image',
-            bg: 'bg-indigo-50',
-            border: 'border-indigo-100',
+            bannerBg: 'from-indigo-600 to-violet-800',
+            badgeBg: 'bg-indigo-50 text-indigo-800 border-indigo-200',
             adminUrl: 'http://c9cdcow274htjl1cb71aph7c.163.227.239.97.sslip.io',
-            user: 'No Login Required',
-            pass: 'Open Public Tool',
-            badge: 'Card Studio'
+            user: 'Public Studio',
+            pass: 'No Password Required',
+            badge: 'Card Studio',
+            desc: '2-Page Interactive Card Generator & PDF Studio'
           };
         }
         return {
           icon: 'fa-solid fa-globe',
           type: 'icon',
-          bg: 'bg-slate-50',
-          border: 'border-slate-100',
+          bannerBg: 'from-slate-700 to-slate-900',
+          badgeBg: 'bg-slate-50 text-slate-800 border-slate-200',
           adminUrl: '',
           user: 'admin',
           pass: 'admin123',
-          badge: 'External'
+          badge: 'External Portal',
+          desc: 'External Verification Portal'
         };
       };
     %>
@@ -145,93 +159,106 @@
     <% sites.forEach(site => { 
       const meta = getMeta(site.key_name);
     %>
-      <div class="portal-card bg-white border border-slate-200/90 rounded-2xl p-5 shadow-xs hover:shadow-md hover:border-slate-300 transition-all flex flex-col justify-between group">
+      <div class="portal-card bg-white border border-slate-200/90 rounded-3xl shadow-sm hover:shadow-md hover:border-slate-300 transition-all flex flex-col justify-between overflow-hidden">
         
-        <!-- Top Section -->
+        <!-- Card Top Section -->
         <div>
-          <!-- Header with Logo & Title -->
-          <div class="flex items-start gap-3.5 mb-3">
-            <div class="w-13 h-13 rounded-2xl p-2.5 flex items-center justify-center flex-shrink-0 <%= meta.bg %> border <%= meta.border %> shadow-xs group-hover:scale-105 transition-transform">
+          <!-- Mini Country / Agency Top Banner -->
+          <div class="h-16 bg-gradient-to-r <%= meta.bannerBg %> px-4 pt-3 flex items-start justify-between relative">
+            <div class="flex items-center gap-1.5">
+              <span class="font-mono text-[11px] font-black text-white/95 bg-black/25 backdrop-blur-xs px-2.5 py-0.5 rounded-lg border border-white/20">
+                /<%= site.key_name %>
+              </span>
+            </div>
+            
+            <span class="text-[10px] font-extrabold text-white bg-white/20 backdrop-blur-xs px-2.5 py-0.5 rounded-full border border-white/25">
+              <%= meta.badge %>
+            </span>
+          </div>
+
+          <!-- Logo & Header Overlay -->
+          <div class="px-4.5 -mt-8 flex items-end gap-3 mb-3">
+            <!-- Constrained Logo Box (Always clean, never clipped, never overflow) -->
+            <div class="w-16 h-16 min-w-16 min-h-16 max-w-16 max-h-16 rounded-2xl p-2 bg-white border-2 border-slate-100 shadow-md flex items-center justify-center flex-shrink-0 z-10 overflow-hidden">
               <% if (meta.type === 'image') { %>
-                <img src="<%= meta.logo %>" alt="<%= site.title %> logo" class="w-full h-full object-contain">
+                <img src="<%= meta.logo %>" alt="<%= site.title %> logo" class="w-full h-full max-w-full max-h-full object-contain block">
               <% } else { %>
-                <i class="<%= meta.icon %> text-xl text-slate-600"></i>
+                <i class="<%= meta.icon %> text-2xl text-slate-600"></i>
               <% } %>
             </div>
 
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center justify-between gap-1 mb-1">
-                <span class="portal-key font-mono text-[11px] font-extrabold text-blue-700 bg-blue-50 border border-blue-200/70 px-2 py-0.5 rounded-lg truncate">
-                  /<%= site.key_name %>
-                </span>
-                <span class="text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200/70">
-                  <%= meta.badge %>
-                </span>
-              </div>
-
-              <h2 class="portal-name font-black text-sm sm:text-base text-slate-900 leading-snug line-clamp-2" title="<%= site.title %>">
+            <div class="flex-1 min-w-0 pb-1">
+              <h2 class="portal-name font-black text-base text-slate-900 leading-snug line-clamp-1" title="<%= site.title %>">
                 <%= site.title %>
               </h2>
+              <p class="text-[11px] text-slate-500 font-medium truncate">
+                <%= meta.desc %>
+              </p>
             </div>
           </div>
 
-          <!-- Destination URL Box -->
-          <div class="bg-slate-50/90 border border-slate-100 rounded-xl p-2.5 my-2.5 flex items-center justify-between gap-2">
-            <span class="text-[11px] font-mono text-slate-600 truncate flex-1" title="<%= site.base_url %>">
-              <%= site.base_url %>
-            </span>
-            <span class="text-[10px] font-bold text-slate-400 bg-white border border-slate-200/80 px-1.5 py-0.5 rounded-md flex-shrink-0">
-              <%= site.total_clicks || 0 %> scans
-            </span>
-          </div>
-
-          <!-- Credentials Box with Quick-Copy -->
-          <div class="bg-amber-50/40 border border-amber-200/60 rounded-xl p-3 my-2.5 space-y-1.5">
-            <div class="text-[10px] font-extrabold uppercase tracking-wider text-amber-900 flex items-center justify-between">
-              <span class="flex items-center gap-1">
-                <i class="fa-solid fa-key text-[10px] text-amber-600"></i>
-                Admin Access
+          <div class="px-4.5 space-y-2.5">
+            <!-- Destination URL Box -->
+            <div class="bg-slate-50 border border-slate-100 rounded-xl p-2.5 flex items-center justify-between gap-2">
+              <span class="text-[11px] font-mono text-slate-600 truncate flex-1" title="<%= site.base_url %>">
+                <%= site.base_url %>
               </span>
-              <% if (meta.adminUrl) { %>
-                <a href="<%= meta.adminUrl %>" target="_blank" class="text-[10px] font-bold text-blue-700 hover:underline">Open Admin &rarr;</a>
-              <% } %>
+              <span class="text-[10px] font-bold text-slate-500 bg-white border border-slate-200/80 px-2 py-0.5 rounded-md flex-shrink-0 shadow-2xs">
+                <%= site.total_clicks || 0 %> scans
+              </span>
             </div>
 
-            <!-- Username row -->
-            <div class="flex items-center justify-between bg-white/90 border border-amber-100 rounded-lg px-2.5 py-1 text-xs">
-              <span class="text-slate-500 text-[11px] font-medium">User:</span>
-              <div class="flex items-center gap-1.5 max-w-[70%]">
-                <code class="font-mono text-[11px] font-bold text-slate-800 truncate"><%= meta.user %></code>
-                <% if (meta.user !== 'No Login Required') { %>
-                  <button type="button" onclick="copyToClipboard('<%= meta.user %>')" class="text-slate-400 hover:text-slate-800 p-0.5" title="Copy User">
-                    <i class="fa-regular fa-copy text-[11px]"></i>
-                  </button>
+            <!-- Credentials Box with Quick-Copy -->
+            <div class="bg-amber-50/50 border border-amber-200/70 rounded-2xl p-3 space-y-1.5">
+              <div class="text-[10px] font-black uppercase tracking-wider text-amber-900 flex items-center justify-between">
+                <span class="flex items-center gap-1.5">
+                  <i class="fa-solid fa-key text-[10px] text-amber-600"></i>
+                  <span>Admin Credentials</span>
+                </span>
+                <% if (meta.adminUrl) { %>
+                  <a href="<%= meta.adminUrl %>" target="_blank" class="text-[10px] font-bold text-blue-700 hover:text-blue-800 hover:underline flex items-center gap-1">
+                    <span>Direct Login</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+                  </a>
                 <% } %>
               </div>
-            </div>
 
-            <!-- Password row -->
-            <div class="flex items-center justify-between bg-white/90 border border-amber-100 rounded-lg px-2.5 py-1 text-xs">
-              <span class="text-slate-500 text-[11px] font-medium">Pass:</span>
-              <div class="flex items-center gap-1.5 max-w-[70%]">
-                <code class="font-mono text-[11px] font-bold text-slate-800 truncate"><%= meta.pass %></code>
-                <% if (meta.pass !== 'Open Public Tool') { %>
-                  <button type="button" onclick="copyToClipboard('<%= meta.pass %>')" class="text-slate-400 hover:text-slate-800 p-0.5" title="Copy Password">
-                    <i class="fa-regular fa-copy text-[11px]"></i>
-                  </button>
-                <% } %>
+              <!-- Username row -->
+              <div class="flex items-center justify-between bg-white border border-amber-100 rounded-xl px-2.5 py-1.5 text-xs">
+                <span class="text-slate-400 text-[11px] font-bold">User:</span>
+                <div class="flex items-center gap-1.5 max-w-[75%]">
+                  <code class="font-mono text-[11px] font-black text-slate-800 truncate"><%= meta.user %></code>
+                  <% if (meta.user !== 'Public Studio') { %>
+                    <button type="button" onclick="copyToClipboard('<%= meta.user %>')" class="text-slate-400 hover:text-blue-600 p-1 rounded-md hover:bg-slate-50" title="Copy Username">
+                      <i class="fa-regular fa-copy text-xs"></i>
+                    </button>
+                  <% } %>
+                </div>
+              </div>
+
+              <!-- Password row -->
+              <div class="flex items-center justify-between bg-white border border-amber-100 rounded-xl px-2.5 py-1.5 text-xs">
+                <span class="text-slate-400 text-[11px] font-bold">Pass:</span>
+                <div class="flex items-center gap-1.5 max-w-[75%]">
+                  <code class="font-mono text-[11px] font-black text-slate-800 truncate"><%= meta.pass %></code>
+                  <% if (meta.pass !== 'No Password Required') { %>
+                    <button type="button" onclick="copyToClipboard('<%= meta.pass %>')" class="text-slate-400 hover:text-blue-600 p-1 rounded-md hover:bg-slate-50" title="Copy Password">
+                      <i class="fa-regular fa-copy text-xs"></i>
+                    </button>
+                  <% } %>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
         <!-- Action Buttons -->
-        <div class="space-y-2 pt-3 border-t border-slate-100">
+        <div class="p-4.5 pt-3 space-y-2 border-t border-slate-100 mt-3">
           <a 
             href="<%= meta.adminUrl || site.base_url %>" 
             target="_blank" 
             rel="noopener noreferrer"
-            class="w-full py-2.5 px-3 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2 transition shadow-xs"
+            class="w-full py-2.5 px-3 rounded-xl text-xs font-black bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2 transition shadow-xs active:scale-[0.99]"
           >
             <span>Launch Dashboard</span>
             <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
@@ -241,7 +268,7 @@
             <button 
               type="button" 
               onclick="showQR(<%= site.id %>, '<%= site.key_name %>', '<%= site.title %>')"
-              class="py-2 px-3 rounded-xl text-xs font-bold bg-slate-50 text-slate-700 border border-slate-200 hover:bg-slate-100 hover:text-slate-900 flex items-center justify-center gap-1.5 transition"
+              class="py-2.5 px-3 rounded-xl text-xs font-bold bg-slate-50 text-slate-700 border border-slate-200 hover:bg-slate-100 hover:text-slate-900 flex items-center justify-center gap-1.5 transition active:scale-[0.98]"
             >
               <i class="fa-solid fa-qrcode text-xs text-blue-600"></i>
               <span>QR Code</span>
@@ -250,7 +277,7 @@
             <button 
               type="button" 
               onclick="copyToClipboard('<%= baseUrl %>/<%= site.key_name %>/')"
-              class="py-2 px-3 rounded-xl text-xs font-bold bg-slate-50 text-slate-700 border border-slate-200 hover:bg-slate-100 hover:text-slate-900 flex items-center justify-center gap-1.5 transition"
+              class="py-2.5 px-3 rounded-xl text-xs font-bold bg-slate-50 text-slate-700 border border-slate-200 hover:bg-slate-100 hover:text-slate-900 flex items-center justify-center gap-1.5 transition active:scale-[0.98]"
             >
               <i class="fa-regular fa-copy text-xs text-slate-500"></i>
               <span>Copy Link</span>
@@ -301,8 +328,7 @@
     const cards = document.querySelectorAll('.portal-card');
     cards.forEach(card => {
       const name = card.querySelector('.portal-name').textContent.toLowerCase();
-      const key = card.querySelector('.portal-key').textContent.toLowerCase();
-      card.style.display = (name.includes(q) || key.includes(q)) ? '' : 'none';
+      card.style.display = name.includes(q) ? '' : 'none';
     });
   }
 
