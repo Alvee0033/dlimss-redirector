@@ -1,26 +1,33 @@
-<div class="max-w-5xl mx-auto px-4 py-8">
+<div class="max-w-6xl mx-auto px-4 py-8">
 
   <!-- Header -->
   <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
     <div>
-      <h1 class="text-2xl font-extrabold text-slate-900">Destination Websites</h1>
-      <p class="text-slate-500 text-sm mt-0.5">
-        Open websites directly in your browser or download their QR codes.
+      <h1 class="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2.5">
+        <span class="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center text-sm shadow-sm">
+          <i class="fa-solid fa-layer-group"></i>
+        </span>
+        <span>Destination Portals & System Hub</span>
+      </h1>
+      <p class="text-slate-500 text-xs sm:text-sm mt-1">
+        Direct launchpad with verified credentials, one-click copy, and official agency logos.
       </p>
     </div>
 
     <div class="flex items-center gap-2">
-      <span class="text-xs font-bold px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200">
-        <%= sites.filter(s => s.is_active).length %> Online
+      <span class="text-xs font-bold px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200/80 shadow-xs flex items-center gap-1.5">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span><%= sites.filter(s => s.is_active).length %> Online</span>
       </span>
-      <span class="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 border border-slate-200">
-        <%= sites.reduce((acc, s) => acc + (s.total_clicks || 0), 0) %> Scans
+      <span class="text-xs font-bold px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 border border-slate-200/80 shadow-xs flex items-center gap-1.5">
+        <i class="fa-solid fa-bolt text-amber-500 text-[11px]"></i>
+        <span><%= sites.reduce((acc, s) => acc + (s.total_clicks || 0), 0) %> Scans</span>
       </span>
     </div>
   </div>
 
   <!-- Search Filter -->
-  <div class="mb-5 relative">
+  <div class="mb-6 relative">
     <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
       <i class="fa-solid fa-magnifying-glass text-sm"></i>
     </div>
@@ -28,56 +35,224 @@
       type="text" 
       id="portal-search" 
       oninput="filterPortals()" 
-      placeholder="Search websites..." 
-      class="w-full rounded-xl pl-10 pr-4 py-2.5 text-sm text-slate-900 shadow-sm"
+      placeholder="Search by country, keyword, or URL (e.g. Bangladesh, Pakistan, DARI, India)..." 
+      class="w-full rounded-2xl pl-10 pr-4 py-3 text-sm text-slate-900 bg-white border border-slate-200 shadow-xs focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition"
     >
   </div>
 
-  <!-- Cards -->
-  <div id="portals-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <% sites.forEach(site => { %>
-      <div class="portal-card bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:border-slate-300 transition flex flex-col justify-between">
+  <!-- Portals Grid -->
+  <div id="portals-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+    <% 
+      const getMeta = (key) => {
+        key = (key || '').toLowerCase();
+        if (key.includes('dari')) {
+          return {
+            logo: '/logos/dari.svg',
+            type: 'image',
+            bg: 'bg-emerald-50',
+            border: 'border-emerald-100',
+            adminUrl: 'https://dari-ace.com/admin',
+            user: 'officer@adrec.gov.ae',
+            pass: 'admin123',
+            badge: 'UAE ADREC'
+          };
+        }
+        if (key.includes('bd')) {
+          return {
+            logo: '/logos/bd.png',
+            type: 'image',
+            bg: 'bg-green-50',
+            border: 'border-green-100',
+            adminUrl: 'http://ewqqphsfrvznx2wabg1dgoej.163.227.239.97.sslip.io/login',
+            user: 'admin@brta.gov.bd',
+            pass: 'admin123',
+            badge: 'Bangladesh BRTA'
+          };
+        }
+        if (key.includes('pk')) {
+          return {
+            logo: '/logos/pk.png',
+            type: 'image',
+            bg: 'bg-teal-50',
+            border: 'border-teal-100',
+            adminUrl: 'https://kpk.dlimsvr.com/admin',
+            user: 'admin',
+            pass: 'admin',
+            badge: 'KPK Police'
+          };
+        }
+        if (key.includes('pakistan')) {
+          return {
+            logo: '/logos/pakistan.png',
+            type: 'image',
+            bg: 'bg-emerald-50',
+            border: 'border-emerald-100',
+            adminUrl: 'https://pakistan.dlimsvr.com/admin',
+            user: 'admin@dlims.gov',
+            pass: 'dlims@admin2024',
+            badge: 'Islamabad Police'
+          };
+        }
+        if (key.includes('india')) {
+          return {
+            logo: '/logos/india.png',
+            type: 'image',
+            bg: 'bg-orange-50',
+            border: 'border-orange-100',
+            adminUrl: 'https://sarathiparivahn.com/something',
+            user: 'admin@dlims.gov',
+            pass: 'dlims@admin2024',
+            badge: 'India Parivahan'
+          };
+        }
+        if (key.includes('afghan')) {
+          return {
+            logo: '/logos/afghan.webp',
+            type: 'image',
+            bg: 'bg-red-50',
+            border: 'border-red-100',
+            adminUrl: 'https://afghansdlims.com/login',
+            user: 'admin',
+            pass: 'admin123',
+            badge: 'Afghanistan Traffic'
+          };
+        }
+        if (key.includes('card')) {
+          return {
+            logo: '/logos/card.svg',
+            type: 'image',
+            bg: 'bg-indigo-50',
+            border: 'border-indigo-100',
+            adminUrl: 'http://c9cdcow274htjl1cb71aph7c.163.227.239.97.sslip.io',
+            user: 'No Login Required',
+            pass: 'Open Public Tool',
+            badge: 'Card Studio'
+          };
+        }
+        return {
+          icon: 'fa-solid fa-globe',
+          type: 'icon',
+          bg: 'bg-slate-50',
+          border: 'border-slate-100',
+          adminUrl: '',
+          user: 'admin',
+          pass: 'admin123',
+          badge: 'External'
+        };
+      };
+    %>
+
+    <% sites.forEach(site => { 
+      const meta = getMeta(site.key_name);
+    %>
+      <div class="portal-card bg-white border border-slate-200/90 rounded-2xl p-5 shadow-xs hover:shadow-md hover:border-slate-300 transition-all flex flex-col justify-between group">
         
+        <!-- Top Section -->
         <div>
-          <div class="flex items-center justify-between gap-2 mb-2">
-            <h2 class="portal-name font-extrabold text-base sm:text-lg text-slate-900"><%= site.title %></h2>
-            <span class="portal-key font-mono text-xs font-bold text-blue-700 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-md">
-              /<%= site.key_name %>
+          <!-- Header with Logo & Title -->
+          <div class="flex items-start gap-3.5 mb-3">
+            <div class="w-13 h-13 rounded-2xl p-2.5 flex items-center justify-center flex-shrink-0 <%= meta.bg %> border <%= meta.border %> shadow-xs group-hover:scale-105 transition-transform">
+              <% if (meta.type === 'image') { %>
+                <img src="<%= meta.logo %>" alt="<%= site.title %> logo" class="w-full h-full object-contain">
+              <% } else { %>
+                <i class="<%= meta.icon %> text-xl text-slate-600"></i>
+              <% } %>
+            </div>
+
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between gap-1 mb-1">
+                <span class="portal-key font-mono text-[11px] font-extrabold text-blue-700 bg-blue-50 border border-blue-200/70 px-2 py-0.5 rounded-lg truncate">
+                  /<%= site.key_name %>
+                </span>
+                <span class="text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200/70">
+                  <%= meta.badge %>
+                </span>
+              </div>
+
+              <h2 class="portal-name font-black text-sm sm:text-base text-slate-900 leading-snug line-clamp-2" title="<%= site.title %>">
+                <%= site.title %>
+              </h2>
+            </div>
+          </div>
+
+          <!-- Destination URL Box -->
+          <div class="bg-slate-50/90 border border-slate-100 rounded-xl p-2.5 my-2.5 flex items-center justify-between gap-2">
+            <span class="text-[11px] font-mono text-slate-600 truncate flex-1" title="<%= site.base_url %>">
+              <%= site.base_url %>
+            </span>
+            <span class="text-[10px] font-bold text-slate-400 bg-white border border-slate-200/80 px-1.5 py-0.5 rounded-md flex-shrink-0">
+              <%= site.total_clicks || 0 %> scans
             </span>
           </div>
 
-          <div class="bg-slate-50 border border-slate-100 rounded-xl p-3 my-2 text-xs font-mono text-slate-700 truncate" title="<%= site.base_url %>">
-            <%= site.base_url %>
+          <!-- Credentials Box with Quick-Copy -->
+          <div class="bg-amber-50/40 border border-amber-200/60 rounded-xl p-3 my-2.5 space-y-1.5">
+            <div class="text-[10px] font-extrabold uppercase tracking-wider text-amber-900 flex items-center justify-between">
+              <span class="flex items-center gap-1">
+                <i class="fa-solid fa-key text-[10px] text-amber-600"></i>
+                Admin Access
+              </span>
+              <% if (meta.adminUrl) { %>
+                <a href="<%= meta.adminUrl %>" target="_blank" class="text-[10px] font-bold text-blue-700 hover:underline">Open Admin &rarr;</a>
+              <% } %>
+            </div>
+
+            <!-- Username row -->
+            <div class="flex items-center justify-between bg-white/90 border border-amber-100 rounded-lg px-2.5 py-1 text-xs">
+              <span class="text-slate-500 text-[11px] font-medium">User:</span>
+              <div class="flex items-center gap-1.5 max-w-[70%]">
+                <code class="font-mono text-[11px] font-bold text-slate-800 truncate"><%= meta.user %></code>
+                <% if (meta.user !== 'No Login Required') { %>
+                  <button type="button" onclick="copyToClipboard('<%= meta.user %>')" class="text-slate-400 hover:text-slate-800 p-0.5" title="Copy User">
+                    <i class="fa-regular fa-copy text-[11px]"></i>
+                  </button>
+                <% } %>
+              </div>
+            </div>
+
+            <!-- Password row -->
+            <div class="flex items-center justify-between bg-white/90 border border-amber-100 rounded-lg px-2.5 py-1 text-xs">
+              <span class="text-slate-500 text-[11px] font-medium">Pass:</span>
+              <div class="flex items-center gap-1.5 max-w-[70%]">
+                <code class="font-mono text-[11px] font-bold text-slate-800 truncate"><%= meta.pass %></code>
+                <% if (meta.pass !== 'Open Public Tool') { %>
+                  <button type="button" onclick="copyToClipboard('<%= meta.pass %>')" class="text-slate-400 hover:text-slate-800 p-0.5" title="Copy Password">
+                    <i class="fa-regular fa-copy text-[11px]"></i>
+                  </button>
+                <% } %>
+              </div>
+            </div>
           </div>
         </div>
 
+        <!-- Action Buttons -->
         <div class="space-y-2 pt-3 border-t border-slate-100">
           <a 
-            href="<%= site.base_url %>" 
+            href="<%= meta.adminUrl || site.base_url %>" 
             target="_blank" 
             rel="noopener noreferrer"
-            class="w-full py-2.5 px-4 rounded-xl text-sm font-bold bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center gap-2 transition shadow-sm"
+            class="w-full py-2.5 px-3 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2 transition shadow-xs"
           >
-            <span>Open Website</span>
-            <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+            <span>Launch Dashboard</span>
+            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
           </a>
 
           <div class="grid grid-cols-2 gap-2">
             <button 
               type="button" 
               onclick="showQR(<%= site.id %>, '<%= site.key_name %>', '<%= site.title %>')"
-              class="py-2 px-3 rounded-lg text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 flex items-center justify-center gap-1.5 transition"
+              class="py-2 px-3 rounded-xl text-xs font-bold bg-slate-50 text-slate-700 border border-slate-200 hover:bg-slate-100 hover:text-slate-900 flex items-center justify-center gap-1.5 transition"
             >
-              <i class="fa-solid fa-qrcode text-xs"></i>
+              <i class="fa-solid fa-qrcode text-xs text-blue-600"></i>
               <span>QR Code</span>
             </button>
 
             <button 
               type="button" 
               onclick="copyToClipboard('<%= baseUrl %>/<%= site.key_name %>/')"
-              class="py-2 px-3 rounded-lg text-xs font-bold bg-slate-50 text-slate-700 border border-slate-200 hover:bg-slate-100 flex items-center justify-center gap-1.5 transition"
+              class="py-2 px-3 rounded-xl text-xs font-bold bg-slate-50 text-slate-700 border border-slate-200 hover:bg-slate-100 hover:text-slate-900 flex items-center justify-center gap-1.5 transition"
             >
-              <i class="fa-regular fa-copy text-xs"></i>
+              <i class="fa-regular fa-copy text-xs text-slate-500"></i>
               <span>Copy Link</span>
             </button>
           </div>
@@ -90,21 +265,21 @@
 </div>
 
 <!-- QR Modal -->
-<div id="qr-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
-  <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-xl relative text-center">
+<div id="qr-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
+  <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl relative text-center border border-slate-100 animate-in fade-in zoom-in-95 duration-150">
     <button 
       onclick="document.getElementById('qr-modal').classList.add('hidden')"
-      class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 p-2"
+      class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 w-8 h-8 rounded-full flex items-center justify-center hover:bg-slate-100 transition"
     >
-      <i class="fa-solid fa-xmark text-lg"></i>
+      <i class="fa-solid fa-xmark text-base"></i>
     </button>
 
-    <h2 class="text-base font-bold text-slate-900 mb-1" id="qr-label">QR Code</h2>
-    <p class="text-xs text-slate-500 mb-4 font-mono break-all" id="qr-url-label"></p>
+    <h2 class="text-base font-black text-slate-900 mb-1" id="qr-label">QR Code</h2>
+    <p class="text-xs text-slate-500 mb-4 font-mono break-all px-2" id="qr-url-label"></p>
 
-    <div class="flex justify-center mb-4">
-      <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 inline-block">
-        <img id="qr-image" src="" alt="QR Code" class="w-48 h-48 block mx-auto">
+    <div class="flex justify-center mb-5">
+      <div class="bg-white p-3.5 rounded-2xl border-2 border-slate-100 shadow-inner inline-block">
+        <img id="qr-image" src="" alt="QR Code" class="w-48 h-48 block mx-auto rounded-lg">
       </div>
     </div>
 
@@ -115,7 +290,7 @@
       class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold bg-blue-600 hover:bg-blue-700 text-white transition shadow-sm"
     >
       <i class="fa-solid fa-download text-xs"></i>
-      Download Image
+      <span>Download High-Res QR</span>
     </a>
   </div>
 </div>
@@ -134,19 +309,19 @@
   function copyToClipboard(text) {
     if (navigator.clipboard) {
       navigator.clipboard.writeText(text).then(() => {
-        showToast('Link copied');
+        showToast('Copied: ' + text);
       });
     } else {
-      showToast('Link copied');
+      showToast('Copied: ' + text);
     }
   }
 
   function showToast(msg) {
     const toast = document.createElement('div');
-    toast.className = 'fixed bottom-20 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs font-semibold px-3 py-1.5 rounded-lg shadow-lg z-50';
-    toast.textContent = msg;
+    toast.className = 'fixed bottom-20 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-xs font-bold px-4 py-2 rounded-xl shadow-2xl z-50 transition-all border border-slate-700 flex items-center gap-2';
+    toast.innerHTML = '<i class="fa-solid fa-check text-emerald-400"></i> ' + msg;
     document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 2000);
+    setTimeout(() => toast.remove(), 2500);
   }
 
   async function showQR(siteId, keyName, title) {
@@ -169,7 +344,7 @@
       dlBtn.href = data.qr;
       dlBtn.download = `qr-${keyName}.png`;
     } catch(e) {
-      urlLabel.textContent = 'Error';
+      urlLabel.textContent = 'Error loading QR';
     }
   }
 </script>
